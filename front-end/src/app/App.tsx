@@ -9,8 +9,15 @@ import { AppSidebar } from "@/components/sidebar/app-sidebar";
 function App() {
   return (
     <>
-      <SidebarProvider>
-        <AppSidebar />
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 52)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="floating" collapsible="icon" />
         <ThemeProvider>
           <Routes>
             <Route path="/" element={<Layout />}>
