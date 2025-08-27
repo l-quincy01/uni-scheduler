@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend.Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - exam-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend.Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/examdb
+      - SQL_CONNECTION=Server=sqlserver;Database=exams;User Id=sa;Password=yourpassword;
+    depends_on:
+      - mongo
+      - scraper
+    networks:
+      - exam-net
+
+  scraper:
+    build:
+      context: ./scraper
+      dockerfile: ../docker/scraper.Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - exam-net
+
+  mongo:
+    image: mongo:6
+    container_name: exam-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - exam-net
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: exam-sql
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - exam-net
+
+volumes:
+  mongo_data:
+
+networks:
+  exam-net:
+    driver: bridge
