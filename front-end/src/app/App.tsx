@@ -6,6 +6,10 @@ import { ThemeProvider } from "./providers/theme/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import CalendarPage from "@/pages/Calendar/CalendarPage";
+import DashboardPage from "@/pages/Dashboard/DashboardPage";
+
+import ProfilePage from "@/pages/Profile/ProfilePage";
+import SchedulePage from "@/pages/Schedule/SchedulePage";
 
 function App() {
   return (
@@ -22,8 +26,12 @@ function App() {
         <ThemeProvider>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Home />}></Route>
+              <Route index element={<DashboardPage />}></Route>
+
+              <Route path="/calendar" element={<SchedulePage />}></Route>
               <Route path="/calendar" element={<CalendarPage />}></Route>
+
+              <Route path="/calendar" element={<ProfilePage />}></Route>
             </Route>
           </Routes>
         </ThemeProvider>
