@@ -5,6 +5,7 @@ import Layout from "@/app/Layout";
 import { ThemeProvider } from "./providers/theme/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import CalendarPage from "@/pages/Calendar/CalendarPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />}></Route>
+              <Route path="/calendar" element={<CalendarPage />}></Route>
             </Route>
           </Routes>
         </ThemeProvider>
