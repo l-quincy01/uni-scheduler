@@ -1,15 +1,14 @@
 import { Route, Routes } from "react-router";
 
-import Home from "@/pages/Home/Home";
-import Layout from "@/app/Layout";
+import Layout from "@/_app/Layout";
 import { ThemeProvider } from "./providers/theme/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import CalendarPage from "@/pages/Calendar/CalendarPage";
-import DashboardPage from "@/pages/Dashboard/DashboardPage";
+import CalendarPage from "@/_pages/Calendar/CalendarPage";
+import DashboardPage from "@/_pages/Dashboard/DashboardPage";
 
-import ProfilePage from "@/pages/Profile/ProfilePage";
-import SchedulePage from "@/pages/Schedule/SchedulePage";
+import ProfilePage from "@/_pages/Profile/ProfilePage";
+import SchedulePage from "@/_pages/Schedule/SchedulePage";
 
 function App() {
   return (
@@ -28,10 +27,10 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<DashboardPage />}></Route>
 
-              <Route path="/calendar" element={<SchedulePage />}></Route>
+              <Route path="/schedule" element={<SchedulePage />}></Route>
               <Route path="/calendar" element={<CalendarPage />}></Route>
 
-              <Route path="/calendar" element={<ProfilePage />}></Route>
+              <Route path="/profile" element={<ProfilePage />}></Route>
             </Route>
           </Routes>
         </ThemeProvider>

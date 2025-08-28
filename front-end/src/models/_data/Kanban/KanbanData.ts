@@ -1,0 +1,230 @@
+import type { KanbanColumnData } from "@/components/Dashboard/Kanban/KanbanBoard";
+
+export const dummyKanbanData: KanbanColumnData[] = [
+  {
+    id: "upcoming",
+    title: "Upcoming Work",
+    colorDot: "bg-gray-600",
+    items: [
+      {
+        id: 1,
+        title: "Physics Test 2",
+        description: "Solid state & Electricity",
+        type: "Test",
+        date: "2025-11-10",
+        priority: "Medium",
+      },
+      {
+        id: 2,
+        title: "History Essay",
+        description: "Causes of WWII",
+        type: "Essay",
+        date: "2025-10-25",
+        priority: "High",
+      },
+    ],
+  },
+  {
+    id: "todo",
+    title: "To Do",
+    colorDot: "bg-green-600",
+    items: [
+      {
+        id: 3,
+        title: "Math Homework",
+        description: "Integration practice (10 problems)",
+        type: "Homework",
+        date: "2025-08-12",
+        priority: "Low",
+      },
+    ],
+  },
+  {
+    id: "inprogress",
+    title: "In Progress",
+    colorDot: "bg-orange-600",
+    items: [
+      {
+        id: 4,
+        title: "Chemistry Lab Report",
+        description: "Titration experiment results",
+        type: "Lab",
+        date: "2025-08-15",
+        priority: "Medium",
+      },
+    ],
+  },
+  {
+    id: "done",
+    title: "Done",
+    colorDot: "bg-blue-600",
+    items: [
+      {
+        id: 5,
+        title: "English Presentation",
+        description: "Shakespeare's influence on modern drama",
+        type: "Presentation",
+        date: "2025-08-05",
+        priority: "Low",
+      },
+    ],
+  },
+];
+
+export const dummyKanbanData2: KanbanColumnData[] = [
+  {
+    id: "physics",
+    title: "Physics",
+    colorDot: "bg-purple-600",
+    items: [
+      {
+        id: 101,
+        title: "Test 2: Solid State & Electricity",
+        description: "Revise ch. 8–10, solve 3 past papers",
+        type: "Test",
+        date: "2025-11-10",
+        priority: "High",
+      },
+      {
+        id: 102,
+        title: "Homework: Circuit Problems",
+        description: "Kirchhoff’s laws, Thevenin equivalent (10 qs)",
+        type: "Homework",
+        date: "2025-08-18",
+        priority: "Medium",
+      },
+      {
+        id: 103,
+        title: "Lab: Optics Setup Prep",
+        description: "Equipment list, safety notes, hypothesis",
+        type: "Lab",
+        date: "2025-08-20",
+        priority: "Low",
+      },
+    ],
+  },
+  {
+    id: "history",
+    title: "History",
+    colorDot: "bg-amber-600",
+    items: [
+      {
+        id: 201,
+        title: "Essay: Causes of WWII",
+        description: "Thesis + 3 body sections + references (MLA)",
+        type: "Essay",
+        date: "2025-10-25",
+        priority: "High",
+      },
+      {
+        id: 202,
+        title: "Reading Notes",
+        description: "Interwar period pages 120–168, bullet-point notes",
+        type: "Reading",
+        date: "2025-08-14",
+        priority: "Medium",
+      },
+      {
+        id: 203,
+        title: "Source Analysis",
+        description: "Compare two primary sources (500 words)",
+        type: "Assignment",
+        date: "2025-08-22",
+        priority: "Low",
+      },
+    ],
+  },
+  {
+    id: "math",
+    title: "Math",
+    colorDot: "bg-green-600",
+    items: [
+      {
+        id: 301,
+        title: "Homework: Integration Practice",
+        description: "Substitution & parts (10 problems)",
+        type: "Homework",
+        date: "2025-08-12",
+        priority: "Low",
+      },
+      {
+        id: 302,
+        title: "Quiz: Techniques of Integration",
+        description: "U-sub, partial fractions, trig identities",
+        type: "Test",
+        date: "2025-08-19",
+        priority: "Medium",
+      },
+      {
+        id: 303,
+        title: "Project: Visualizing Series",
+        description: "Convergence demos (Geo/Harmonic) mini-report",
+        type: "Project",
+        date: "2025-08-28",
+        priority: "Low",
+      },
+    ],
+  },
+  {
+    id: "chemistry",
+    title: "Chemistry",
+    colorDot: "bg-cyan-600",
+    items: [
+      {
+        id: 401,
+        title: "Lab Report: Titration",
+        description: "Results, calculations, error analysis",
+        type: "Lab",
+        date: "2025-08-15",
+        priority: "Medium",
+      },
+      {
+        id: 402,
+        title: "Worksheet: Stoichiometry",
+        description: "Limiting reagent + percent yield (12 qs)",
+        type: "Homework",
+        date: "2025-08-17",
+        priority: "Low",
+      },
+      {
+        id: 403,
+        title: "Test: Thermodynamics",
+        description: "Enthalpy, entropy, Gibbs free energy",
+        type: "Test",
+        date: "2025-08-26",
+        priority: "High",
+      },
+    ],
+  },
+  {
+    id: "english",
+    title: "English",
+    colorDot: "bg-blue-600",
+    items: [
+      {
+        id: 501,
+        title: "Presentation: Shakespeare & Modern Drama",
+        description: "5–7 min talk + slides",
+        type: "Presentation",
+        date: "2025-08-05",
+        priority: "Low",
+      },
+      {
+        id: 502,
+        title: "Poetry Analysis Assignment",
+        description: "Analyze 3 anthology poems (800–1000 words)",
+        type: "Assignment",
+        date: "2025-10-18",
+        priority: "Medium",
+      },
+      {
+        id: 503,
+        title: "Reading Journal",
+        description: "Ch. 6–9 reflections, 200 words each",
+        type: "Reading",
+        date: "2025-08-16",
+        priority: "Low",
+      },
+    ],
+  },
+];
