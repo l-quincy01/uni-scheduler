@@ -8,7 +8,8 @@ import CalendarPage from "@/_pages/Calendar/CalendarPage";
 import DashboardPage from "@/_pages/Dashboard/DashboardPage";
 
 import ProfilePage from "@/_pages/Profile/ProfilePage";
-import SchedulePage from "@/_pages/Schedule/SchedulePage";
+import SchedulePage from "@/_pages/Exam/ExamPage";
+import ExamPage from "@/_pages/Exam/ExamPage";
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<DashboardPage />}></Route>
 
-              <Route path="/schedule" element={<SchedulePage />}></Route>
+              <Route path="/exam/*" element={<ExamPage />}></Route>
               <Route path="/calendar" element={<CalendarPage />}></Route>
 
               <Route path="/profile" element={<ProfilePage />}></Route>

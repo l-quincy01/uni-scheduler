@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function SchedulePage() {
+export default function ExamPage() {
   return <div></div>;
 }

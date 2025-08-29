@@ -60,15 +60,9 @@ const data = {
   navSchedule: [
     {
       title: "Final year exams",
-      url: "#",
+      url: "/exam",
 
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-      ],
     },
   ],
 };
