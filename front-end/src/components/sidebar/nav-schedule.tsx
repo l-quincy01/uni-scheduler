@@ -23,6 +23,7 @@ export function NavSchedule({
   items,
 }: {
   items: {
+    id: string;
     title: string;
     url: string;
     icon?: LucideIcon;
@@ -38,7 +39,7 @@ export function NavSchedule({
       <SidebarGroupLabel>Schedules</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Link to={item.url}>
+          <Link to={`${item.url}/${item.id}`}>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={item.title}>
                 {/* {item.icon && <item.icon />} */}

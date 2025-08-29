@@ -27,7 +27,7 @@ import KanbanBoard from "@/components/Dashboard/Kanban/KanbanBoard";
  */
 export interface KanbanProps {
   boards: {
-    title: string;
+    title?: string;
     data: KanbanColumnData[];
   }[];
 }
@@ -42,13 +42,14 @@ export default function Kanban({ boards }: KanbanProps) {
   return (
     <div className=" flex flex-col py-2 px-4 rounded-xl gap-4">
       {/* Tabs */}
-      <div className="w-full flex justify-end">
-        <div className="flex rounded-lg border overflow-hidden">
-          {boards.map((board, idx) => (
-            <button
-              key={board.title}
-              onClick={() => setSelectedTab(board.title)}
-              className={`px-2 py-1 text-sm transition-colors 
+      {boards.some((board) => board.title) && (
+        <div className="w-full flex justify-end">
+          <div className="flex rounded-lg border overflow-hidden">
+            {boards.map((board, idx) => (
+              <button
+                key={board.title}
+                onClick={() => setSelectedTab(board.title)}
+                className={`px-2 py-1 text-sm transition-colors 
                 ${
                   selectedTab === board.title
                     ? "bg-neutral-200 dark:bg-accent"
@@ -56,12 +57,13 @@ export default function Kanban({ boards }: KanbanProps) {
                 }
                 ${idx !== boards.length - 1 ? "border-r" : ""}
               `}
-            >
-              {board.title}
-            </button>
-          ))}
+              >
+                {board.title}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Selected board */}
       {boards.map(

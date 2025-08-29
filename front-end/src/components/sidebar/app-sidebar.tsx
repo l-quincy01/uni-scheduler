@@ -59,6 +59,7 @@ const data = {
   ],
   navSchedule: [
     {
+      id: "651f3c2e9a7b4c1234567890",
       title: "Final year exams",
       url: "/exam",
 

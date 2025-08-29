@@ -6,7 +6,7 @@ export default function Layout() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2 items-center">
-        <div className="container  flex flex-col gap-x-4   pl-1 pr-4  ">
+        <div className="container gap-y-4  flex flex-col gap-x-4   pl-1 pr-4  ">
           <SiteHeader />
 
           <Outlet />
