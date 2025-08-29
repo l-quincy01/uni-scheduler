@@ -10,6 +10,10 @@ import DashboardPage from "@/_pages/Dashboard/DashboardPage";
 import ProfilePage from "@/_pages/Profile/ProfilePage";
 import SchedulePage from "@/_pages/Exam/ExamPage";
 import ExamPage from "@/_pages/Exam/ExamPage";
+import ExamAgenda from "@/_pages/Exam/agenda/ExamAgenda";
+import ExamContent from "@/_pages/Exam/content/ExamContent";
+import Index from "@/_pages/Exam/Index";
+import ExamContentView from "@/_pages/Exam/content/ExamContentView";
 
 function App() {
   return (
@@ -28,10 +32,18 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<DashboardPage />}></Route>
 
-              <Route path="/exam/*" element={<ExamPage />}></Route>
+              {/* <Route path="/exam/*" element={<ExamPage />}></Route> */}
+
               <Route path="/calendar" element={<CalendarPage />}></Route>
 
               <Route path="/profile" element={<ProfilePage />}></Route>
+
+              <Route path="exam" element={<Index />}>
+                <Route index element={<ExamPage />}></Route>
+                <Route path="agenda" element={<ExamAgenda />} />
+                <Route path="content" element={<ExamContent />} />
+                <Route path="content/*" element={<ExamContentView />} />
+              </Route>
             </Route>
           </Routes>
         </ThemeProvider>

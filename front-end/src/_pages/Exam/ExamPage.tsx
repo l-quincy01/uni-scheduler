@@ -1,11 +1,12 @@
 import Kanban from "@/components/Dashboard/Kanban/Kanban";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ContentGrid from "@/components/Exam/ContentGrid";
 
 export default function ExamPage() {
   return (
     <div>
-      <Tabs defaultValue="Schedule" className="w-[400px]">
+      {/* <Tabs defaultValue="Schedule" className="w-[400px]">
         <TabsList>
           <TabsTrigger value="Schedule">Schedule</TabsTrigger>
           <TabsTrigger value="Exams">Exams Content</TabsTrigger>
@@ -13,8 +14,11 @@ export default function ExamPage() {
         <TabsContent value="Schedule">
           <Kanban boards={KanbanData} />
         </TabsContent>
-        <TabsContent value="Exams"></TabsContent>
-      </Tabs>
+        <TabsContent value="Exams">
+          <ContentGrid items={contentGridData.assessmentContent} />
+        </TabsContent>
+      </Tabs> */}
+      <Kanban boards={KanbanData} />
     </div>
   );
 }
@@ -38,3 +42,15 @@ const KanbanData = [
     ],
   },
 ];
+
+const contentGridData = {
+  assessmentContent: [
+    {
+      id: "a4",
+      title: "Limits and series of functions",
+      description: "Intro to study of limits and series of functions",
+      date: "Date: 28 Apr 2025",
+      author: "Quincy",
+    },
+  ],
+};

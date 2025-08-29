@@ -22,6 +22,19 @@
 
 import { Badge } from "@/components/ui/badge";
 import { KanbanColumn } from "@/components/Dashboard/Kanban/KanbanColumn";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronRight, SquareArrowOutUpRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Link } from "react-router";
 
 /**
  * Represents an item within a Kanban column.
@@ -84,7 +97,7 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
               className="bg-neutral-50 dark:bg-neutral-900 w-full rounded-xl p-2 border border-neutral-200 dark:border-neutral-800"
             >
               <div className="flex items-start justify-between">
-                <h4 className="text-sm font-semibold">{item.title}</h4>
+                <h4 className="text-md font-semibold">{item.title}</h4>
 
                 {item.type && (
                   <Badge
@@ -101,25 +114,71 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                   {item.description}
                 </p>
               )}
+              {/* <div>
+                <Collapsible className="text-xs group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90 mt-2">
+                  <CollapsibleTrigger asChild>
+                    <div className="flex flex-row items-center gap-2">
+                      Content Added
+                      <ChevronRight
+                        size={14}
+                        className="transition-transform text-xs"
+                      />
+                    </div>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <ol className=" list-disc pl-6">
+                      <li> History Pdf 1</li>
+                    </ol>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div> */}
 
-              {(item.date || item.priority) && (
-                <div className="mt-2 flex items-center gap-2 text-xs">
-                  {item.date && (
-                    <span className="flex items-center py-0.5">
-                      Due:&nbsp;
-                      <time dateTime={item.date}>
-                        {new Date(item.date).toLocaleDateString()}
-                      </time>
-                    </span>
-                  )}
+              <div className="text-xs flex flex-row items-center gap-2">
+                Practice Exams Created: <span>3</span>
+              </div>
 
-                  {item.priority && (
-                    <span className="inline-flex items-center gap-1 rounded-full px-2 border border-amber-200/50 dark:border-amber-400/30 text-amber-700 dark:text-amber-300">
-                      {item.priority}
-                    </span>
-                  )}
-                </div>
-              )}
+              <Tooltip>
+                <TooltipTrigger className="flex flex-row  text-xs  items-center gap-2 p-0">
+                  Next Practice Date:{" "}
+                  <span className="flex flex-row items-center hover:underline cursor-alias gap-1">
+                    30/09/2025
+                    <SquareArrowOutUpRight size={14} />
+                  </span>{" "}
+                </TooltipTrigger>
+                <TooltipContent className="">
+                  <p>View Agenda</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <div className="flex flex-row justify-between items-center mt-2">
+                {(item.date || item.priority) && (
+                  <div className="mt-2 flex items-center gap-2 text-sm font-semibold">
+                    {item.date && (
+                      <span className="flex items-center py-0.5">
+                        Exam Date:&nbsp;
+                        <time dateTime={item.date}>
+                          {new Date(item.date).toLocaleDateString()}
+                        </time>
+                      </span>
+                    )}
+
+                    {item.priority && (
+                      <span className="inline-flex items-center gap-1 rounded-full px-2 border border-amber-200/50 dark:border-amber-400/30 text-amber-700 dark:text-amber-300">
+                        {item.priority}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <Link to={"content"}>
+                  <Button
+                    variant="outline"
+                    className="w-fit h-fit py-1 px-1 cursor-pointer"
+                  >
+                    Practice
+                  </Button>
+                </Link>
+              </div>
             </li>
           ))}
         </KanbanColumn>
