@@ -40,7 +40,7 @@ export default function Kanban({ boards }: KanbanProps) {
   const [selectedTab, setSelectedTab] = useState(boards[0].title);
 
   return (
-    <div className="bg-accent/40 flex flex-col py-2 px-4 rounded-xl gap-4">
+    <div className=" flex flex-col py-2 px-4 rounded-xl gap-4">
       {/* Tabs */}
       <div className="w-full flex justify-end">
         <div className="flex rounded-lg border overflow-hidden">
