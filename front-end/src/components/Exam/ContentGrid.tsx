@@ -101,17 +101,16 @@ export default function ContentGrid({
             <div
               key={index}
               onClick={() => onCardClick?.(item)}
-              className="inline-block rounded-md overflow-hidden hover:bg-accent border hover:border-blue-300/30  mb-2  dark:bg-muted/70 p-1 "
+              className="flex flex-col gap-2 items-center rounded-md overflow-hidden hover:bg-accent border hover:border-blue-300/30  mb-2  dark:bg-muted/70 p-1 "
             >
               <img
                 src="https://youlearn-content-uploads.s3.amazonaws.com/thumbnails/pdf/x6R0LzzLtedX069.png"
                 alt="preview"
-                className="block w-full rounded-sm mb-1 object-fill "
+                className=" w-full rounded-sm  object-contain h-[12rem]"
               />
-              <div className="flex flex-col justify-start  p-2 border-t ">
-                <div className="text-md truncate">{item.title}</div>
-                <div className="text-sm  truncate">
-                  {item.date}, by {item.author}
+              <div className="w-full flex flex-col items-start justify-start  p-2 border-t ">
+                <div className="text-xs truncate max-w-[8rem]">
+                  {item.title}
                 </div>
               </div>
             </div>
