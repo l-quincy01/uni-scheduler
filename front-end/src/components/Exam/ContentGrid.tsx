@@ -101,7 +101,7 @@ export default function ContentGrid({
             <div
               key={index}
               onClick={() => onCardClick?.(item)}
-              className="flex flex-col gap-2 items-center rounded-md overflow-hidden hover:bg-accent border hover:border-blue-300/30  mb-2  dark:bg-muted/70 p-1 "
+              className="w-fit flex flex-col gap-2 items-center rounded-md overflow-hidden hover:bg-accent border hover:border-blue-300/30  mb-2  dark:bg-muted/70 p-1 "
             >
               <img
                 src="https://youlearn-content-uploads.s3.amazonaws.com/thumbnails/pdf/x6R0LzzLtedX069.png"

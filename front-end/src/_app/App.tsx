@@ -8,7 +8,7 @@ import CalendarPage from "@/_pages/Calendar/CalendarPage";
 import DashboardPage from "@/_pages/Dashboard/DashboardPage";
 
 import ProfilePage from "@/_pages/Profile/ProfilePage";
-import SchedulePage from "@/_pages/Exam/ExamPage";
+
 import ExamPage from "@/_pages/Exam/ExamPage";
 import ExamAgenda from "@/_pages/Exam/agenda/ExamAgenda";
 import ExamContent from "@/_pages/Exam/content/ExamContent";
