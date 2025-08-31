@@ -5,10 +5,10 @@ import pdfIcon from "@/assets/Icons/ContentPanel/pdf_icon.png";
 import { Tabs } from "@/components/ui/vercel-tabs";
 
 export default function ExamContent() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("content");
 
   const tabs = [
-    { id: "content", label: "Content" },
+    { id: "scope", label: "Scope" },
     { id: "past", label: "Past Papers" },
   ];
 
@@ -21,11 +21,11 @@ export default function ExamContent() {
       <div className="border  rounded-lg px-4 py-3 w-fit flex flex-col gap-4">
         <Tabs tabs={tabs} onTabChange={(tabId) => setActiveTab(tabId)} />
 
-        {activeTab === "content" && (
+        {activeTab === "scope" && (
           <div className="flex flex-col gap-2">
             <div className="flex flex-row gap-2">
               <span className="text-muted-foreground text-sm">
-                Exam content you've added
+                Study scope you've added
               </span>
             </div>
             <div className="flex flex-col gap-2">

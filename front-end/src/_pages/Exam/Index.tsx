@@ -22,7 +22,7 @@ export default function Index() {
       <Breadcrumb>
         <BreadcrumbList>
           {pathnames.map((segment, index) => {
-            const to = "/" + pathnames.slice(0, index + 1).join("/"); // cumulative path
+            const to = "/" + pathnames.slice(0, index + 1).join("/");
             const isLast = index === pathnames.length - 1;
 
             return (
