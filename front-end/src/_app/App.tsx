@@ -32,13 +32,11 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<DashboardPage />}></Route>
 
-              {/* <Route path="/exam/*" element={<ExamPage />}></Route> */}
-
               <Route path="/calendar" element={<CalendarPage />}></Route>
 
               <Route path="/profile" element={<ProfilePage />}></Route>
 
-              <Route path="exam" element={<Index />}>
+              <Route path="exam/:id" element={<Index />}>
                 <Route index element={<ExamPage />}></Route>
                 <Route path="agenda" element={<ExamAgenda />} />
                 <Route path="content" element={<ExamContent />} />
