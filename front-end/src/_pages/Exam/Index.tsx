@@ -11,27 +11,53 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+function isObjectId(segment: string) {
+  return /^[0-9a-fA-F]{24}$/.test(segment);
+}
+
+function titleCase(s: string) {
+  if (s == "content") {
+    return "Practice Exams ";
+  } else {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+}
+
 export default function Index() {
   const location = useLocation();
 
-  // Split path into segments
-  const pathnames = location.pathname.split("/").filter((x) => x);
+  const allSegments = location.pathname.split("/").filter(Boolean);
+
+  const objectId = allSegments.find(isObjectId);
+
+  const visibleSegments = allSegments.filter((seg) => !isObjectId(seg));
+
+  const buildHref = (visibleIndex: number) => {
+    const parts: string[] = [];
+    for (let i = 0; i <= visibleIndex; i++) {
+      parts.push(visibleSegments[i]);
+      if (visibleSegments[i] === "exam" && objectId) {
+        parts.push(objectId);
+      }
+    }
+    return "/" + parts.join("/");
+  };
 
   return (
     <div>
       <Breadcrumb>
         <BreadcrumbList>
-          {pathnames.map((segment, index) => {
-            const to = "/" + pathnames.slice(0, index + 1).join("/");
-            const isLast = index === pathnames.length - 1;
+          {visibleSegments.map((segment, index) => {
+            const to = buildHref(index);
+            const isLast = index === visibleSegments.length - 1;
 
             return (
               <BreadcrumbItem key={to}>
                 {isLast ? (
-                  <BreadcrumbPage>{segment}</BreadcrumbPage>
+                  <BreadcrumbPage>{titleCase(segment)}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild>
-                    <Link to={to}>{segment}</Link>
+                    <Link to={to}>{titleCase(segment)}</Link>
                   </BreadcrumbLink>
                 )}
                 {!isLast && (

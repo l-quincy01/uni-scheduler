@@ -5,7 +5,7 @@ import pdfIcon from "@/assets/Icons/ContentPanel/pdf_icon.png";
 import { Tabs } from "@/components/ui/vercel-tabs";
 
 export default function ExamContent() {
-  const [activeTab, setActiveTab] = useState("content");
+  const [activeTab, setActiveTab] = useState("scope");
 
   const tabs = [
     { id: "scope", label: "Scope" },
