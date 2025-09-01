@@ -14,6 +14,7 @@ import ExamAgenda from "@/_pages/Exam/agenda/ExamAgenda";
 import ExamContent from "@/_pages/Exam/content/ExamContent";
 import Index from "@/_pages/Exam/Index";
 import ExamContentView from "@/_pages/Exam/content/ExamContentView";
+import { ContentPanelProvider } from "./Context/ContentPanelContext";
 
 function App() {
   return (
@@ -27,24 +28,26 @@ function App() {
         }
       >
         <AppSidebar variant="floating" collapsible="icon" />
-        <ThemeProvider>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<DashboardPage />}></Route>
+        <ContentPanelProvider>
+          <ThemeProvider>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<DashboardPage />}></Route>
 
-              <Route path="/calendar" element={<CalendarPage />}></Route>
+                <Route path="/calendar" element={<CalendarPage />}></Route>
 
-              <Route path="/profile" element={<ProfilePage />}></Route>
+                <Route path="/profile" element={<ProfilePage />}></Route>
 
-              <Route path="exam/:id" element={<Index />}>
-                <Route index element={<ExamPage />}></Route>
-                <Route path="agenda" element={<ExamAgenda />} />
-                <Route path="content" element={<ExamContent />} />
-                <Route path="content/*" element={<ExamContentView />} />
+                <Route path="exam/:id" element={<Index />}>
+                  <Route index element={<ExamPage />}></Route>
+                  <Route path="agenda" element={<ExamAgenda />} />
+                  <Route path="content" element={<ExamContent />} />
+                  <Route path="content/*" element={<ExamContentView />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </ThemeProvider>
+            </Routes>
+          </ThemeProvider>
+        </ContentPanelProvider>
       </SidebarProvider>
     </>
   );

@@ -9,8 +9,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useContentPanel } from "@/_app/Context/ContentPanelContext";
 
 export default function SiteHeader() {
+  const { isContentPanelOpen, toggleContentPanel, setIsContentPanelOpen } =
+    useContentPanel();
+
   const location = useLocation();
 
   const pathname = location.pathname;
@@ -46,9 +50,14 @@ export default function SiteHeader() {
               <Tooltip>
                 <TooltipTrigger>
                   {" "}
-                  <Button variant="outline">
+                  <div
+                    className={`hover:bg-muted p-2 rounded-full ${
+                      isContentPanelOpen ? "bg-muted" : ""
+                    }`}
+                    onClick={() => setIsContentPanelOpen((p) => !p)}
+                  >
                     <Archive size={18} />
-                  </Button>
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent>Content for this exam</TooltipContent>
               </Tooltip>

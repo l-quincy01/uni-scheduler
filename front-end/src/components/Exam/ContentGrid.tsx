@@ -101,12 +101,12 @@ export default function ContentGrid({
             <div
               key={index}
               onClick={() => onCardClick?.(item)}
-              className="w-fit flex flex-col gap-2 items-center rounded-md overflow-hidden hover:bg-accent border hover:border-blue-300/30  mb-2  dark:bg-muted/70 p-1 "
+              className="max-w-[12vw] flex flex-col gap-2 items-center rounded-md overflow-hidden hover:bg-accent border hover:border-blue-300/30  mb-2  dark:bg-muted/70  "
             >
               <img
                 src="https://youlearn-content-uploads.s3.amazonaws.com/thumbnails/pdf/x6R0LzzLtedX069.png"
                 alt="preview"
-                className=" w-full rounded-sm  object-contain h-[12rem]"
+                className=" w-full rounded-sm  object-contain h-[10%]"
               />
               <div className="w-full flex flex-col items-start justify-start  p-2 border-t ">
                 <div className="text-xs truncate max-w-[8rem]">
@@ -120,8 +120,8 @@ export default function ContentGrid({
   };
 
   return (
-    <div className="p-4  h-[80vh] overflow-auto scrollbar-hide @container">
-      <div className=" grid gap-4 grid-cols-1 @sm:grid-cols-2  @lg:grid-cols-3 @xl:grid-cols-4 ">
+    <div className=" overflow-auto scrollbar-hide">
+      <div className=" grid gap-4 grid-cols-2  md:grid-cols-3  lg:grid-cols-5 ">
         {renderVariant()}
       </div>
     </div>

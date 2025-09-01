@@ -9,7 +9,9 @@ export default function Layout() {
         <div className="container gap-y-4  flex flex-col gap-x-4   pl-1 pr-4  ">
           <SiteHeader />
 
-          <Outlet />
+          <div className="px-8">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
