@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, Outlet, useLocation } from "react-router";
-import { SlashIcon } from "lucide-react";
+import { Plus, SlashIcon } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,6 +10,21 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import AddSchedule from "@/components/Modals/AddSchedule";
+import AddExamModal from "@/components/Modals/AddExamModal";
 
 function isObjectId(segment: string) {
   return /^[0-9a-fA-F]{24}$/.test(segment);
@@ -45,31 +60,52 @@ export default function Index() {
 
   return (
     <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          {visibleSegments.map((segment, index) => {
-            const to = buildHref(index);
-            const isLast = index === visibleSegments.length - 1;
+      <div className="flex flex-row justify-between">
+        <Breadcrumb>
+          <BreadcrumbList>
+            {visibleSegments.map((segment, index) => {
+              const to = buildHref(index);
+              const isLast = index === visibleSegments.length - 1;
 
-            return (
-              <BreadcrumbItem key={to}>
-                {isLast ? (
-                  <BreadcrumbPage>{titleCase(segment)}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink asChild>
-                    <Link to={to}>{titleCase(segment)}</Link>
-                  </BreadcrumbLink>
-                )}
-                {!isLast && (
-                  <BreadcrumbSeparator>
-                    <SlashIcon className="w-3 h-3" />
-                  </BreadcrumbSeparator>
-                )}
-              </BreadcrumbItem>
-            );
-          })}
-        </BreadcrumbList>
-      </Breadcrumb>
+              return (
+                <BreadcrumbItem key={to}>
+                  {isLast ? (
+                    <BreadcrumbPage>{titleCase(segment)}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link to={to}>{titleCase(segment)}</Link>
+                    </BreadcrumbLink>
+                  )}
+                  {!isLast && (
+                    <BreadcrumbSeparator>
+                      <SlashIcon className="w-3 h-3" />
+                    </BreadcrumbSeparator>
+                  )}
+                </BreadcrumbItem>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div>
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="secondary">
+                <Plus size={20} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="scale-90">
+              {/* <DialogHeader>
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader> */}
+              <AddExamModal />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
 
       <Outlet />
     </div>
