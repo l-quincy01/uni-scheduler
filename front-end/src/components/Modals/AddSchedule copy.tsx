@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Command,
+  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
@@ -18,7 +19,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { CalendarFold, X } from "lucide-react";
+import { CalendarFold } from "lucide-react";
 
 export interface exams {
   title: string;
@@ -36,18 +37,6 @@ export interface AddScheduleProps {
 }
 
 export default function AddSchedule({ modules, heading }: AddScheduleProps) {
-  const [selectedModules, setSelectedModules] = useState<exams[]>([]);
-
-  const handleSelect = (exam: exams) => {
-    if (!selectedModules.find((item) => item.title === exam.title)) {
-      setSelectedModules([...selectedModules, exam]);
-    }
-  };
-
-  const handleRemove = (title: string) => {
-    setSelectedModules(selectedModules.filter((exam) => exam.title !== title));
-  };
-
   return (
     <div className="flex flex-col items-start gap-4">
       <div className="gap-2 flex flex-col w-full">
@@ -66,7 +55,7 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
         </div>
 
         <Select>
-          <SelectTrigger>
+          <SelectTrigger className="">
             <SelectValue placeholder="Select your courses" />
           </SelectTrigger>
           <SelectContent>
@@ -76,18 +65,18 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
                 <CommandEmpty>No results found.</CommandEmpty>
 
                 {modules.map((mod, index) => (
-                  <React.Fragment key={index}>
-                    <CommandGroup heading={mod.category}>
-                      {mod.exams.map((exam, idx) => (
+                  <>
+                    <CommandGroup key={index} heading={mod.category}>
+                      {mod.exams.map((exam, index) => (
                         <CommandItem
-                          key={idx}
-                          onSelect={() => handleSelect(exam)}
-                          className="flex flex-col justify-start items-start gap-1 text-[0.7rem] cursor-pointer"
+                          key={index}
+                          className="flex flex-col justify-start items-start gap-1 text-[0.5rem] "
                         >
                           <span className="line-clamp-2 max-w-[16rem]">
                             {exam.title}
                           </span>
                           <div className="flex flex-row gap-1">
+                            {" "}
                             <span className="font-semibold">{exam.date}</span>
                             <span className="font-semibold">{exam.time}</span>
                           </div>
@@ -95,7 +84,7 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
                       ))}
                     </CommandGroup>
                     <CommandSeparator />
-                  </React.Fragment>
+                  </>
                 ))}
               </CommandList>
             </Command>
@@ -103,40 +92,40 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
         </Select>
       </div>
 
-      <div className="text-sm font-semibold">Modules</div>
-      {selectedModules.length === 0 ? (
-        <span className="text-sm text-muted-foreground self-center">
-          Nothing added
-        </span>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          {selectedModules.map((exam) => (
-            <Badge
-              key={exam.title}
-              className="flex items-center gap-1 truncate pr-1"
-              variant="secondary"
-            >
-              {exam.title}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemove(exam.title);
-                }}
-                className="ml-1 rounded-sm hover:bg-muted p-0.5"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </Badge>
-          ))}
-        </div>
-      )}
+      <div className="text-sm text-muted-foreground">Modules</div>
+      {/* <span className="text-sm text-muted-foreground self-center">
+        Nothing added
+      </span> */}
+      <div className=" space-x-2 space-y-2">
+        <Badge className="truncate" variant="secondary">
+          MAT301
+        </Badge>
+        <Badge className="truncate" variant="secondary">
+          Psychology 211
+        </Badge>
+        <Badge className="truncate" variant="secondary">
+          Organisational Psychology Honours - Occupational Health & Wellbeing
+        </Badge>
+        <Badge className="truncate" variant="secondary">
+          MAT301
+        </Badge>
+        <Badge className="truncate" variant="secondary">
+          PS 211
+        </Badge>{" "}
+        <Badge className="truncate" variant="secondary">
+          CS112
+        </Badge>
+        <Badge className="truncate" variant="secondary">
+          Psychology 211
+        </Badge>
+      </div>
 
       <div className="w-full gap-8 justify-between">
         <Button
           variant="secondary"
           className="flex flex-row gap-1 items-center cursor-pointer"
-          onClick={() => console.log(selectedModules)}
         >
+          {" "}
           <CalendarFold size={14} /> Create Schedule
         </Button>
       </div>
