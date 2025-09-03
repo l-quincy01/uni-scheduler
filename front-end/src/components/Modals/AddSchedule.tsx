@@ -105,12 +105,12 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
                           onSelect={() => handleSelect(exam)}
                           className="flex flex-col justify-start items-start gap-1 text-[0.7rem] cursor-pointer"
                         >
-                          <span className="line-clamp-2 max-w-[16rem]">
+                          <span className="line-clamp-2 max-w-[16rem] font-semibold">
                             {exam.title}
                           </span>
-                          <div className="flex flex-row gap-1">
-                            <span className="font-semibold">{exam.date}</span>
-                            <span className="font-semibold">{exam.time}</span>
+                          <div className="flex flex-row gap-1 text-muted-foreground">
+                            <span>{exam.date}</span>
+                            <span>{exam.time}</span>
                           </div>
                         </CommandItem>
                       ))}

@@ -47,7 +47,7 @@ export default function SiteHeader() {
           <div className="w-full flex flex-row justify-between items-center">
             <h1 className="text-base font-medium">History</h1>
             <div>
-              <Tooltip>
+              {/* <Tooltip>
                 <TooltipTrigger>
                   {" "}
                   <div
@@ -60,7 +60,7 @@ export default function SiteHeader() {
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>Content for this exam</TooltipContent>
-              </Tooltip>
+              </Tooltip> */}
             </div>
           </div>
         );

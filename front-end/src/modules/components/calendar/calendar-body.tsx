@@ -27,7 +27,7 @@ export function CalendarBody() {
   });
 
   return (
-    <div className="w-full h-full overflow-scroll relative">
+    <div className="w-full h-full scrollbar-hide relative">
       <motion.div
         key={view}
         initial="initial"
@@ -62,6 +62,7 @@ export function CalendarBody() {
         )}
         {view === "agenda" && (
           <motion.div
+            className="scrollbar-hide"
             key="agenda"
             initial="initial"
             animate="animate"

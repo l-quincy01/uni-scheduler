@@ -43,21 +43,21 @@ export function CalendarHeader() {
         transition={transition}
       >
         <div className="options flex-wrap flex items-center gap-4 md:gap-2">
-          <FilterEvents />
+          {/* <FilterEvents /> */}
           <Views />
         </div>
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5">
-          <UserSelect />
+          {/* <UserSelect /> */}
 
-          <AddEditEventDialog>
+          {/* <AddEditEventDialog>
             <Button>
               <Plus className="h-4 w-4" />
               Add Event
             </Button>
-          </AddEditEventDialog>
+          </AddEditEventDialog> */}
         </div>
-        <Settings />
+        {/* <Settings /> */}
       </motion.div>
     </div>
   );

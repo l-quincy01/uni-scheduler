@@ -1,14 +1,19 @@
 import ContentGrid from "@/components/Exam/ContentGrid";
 import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import pdfIcon from "@/assets/Icons/ContentPanel/pdf_icon.png";
 import { Tabs } from "@/components/ui/vercel-tabs";
 import { useContentPanel } from "@/_app/Context/ContentPanelContext";
+import { useCourseCalendar } from "@/_app/Context/CourseCalendarContext";
+import { CalendarSkeleton } from "@/modules/components/calendar/skeletons/calendar-skeleton";
+import { Calendar } from "@/modules/components/calendar/calendar";
 
 export default function ExamContent() {
   const { isContentPanelOpen } = useContentPanel();
 
   const [activeTab, setActiveTab] = useState("scope");
+
+  const { isCourseCalendarOpen } = useCourseCalendar();
 
   const tabs = [
     { id: "scope", label: "Scope" },
@@ -19,10 +24,16 @@ export default function ExamContent() {
     <div className="flex flex-row gap-4 ">
       <div className="py-2">
         {" "}
-        <ContentGrid
-          variant="Thumbnail"
-          items={contentGridData.practiceExams}
-        />
+        {isCourseCalendarOpen ? (
+          <Suspense fallback={<CalendarSkeleton />}>
+            <Calendar />
+          </Suspense>
+        ) : (
+          <ContentGrid
+            variant="Thumbnail"
+            items={contentGridData.practiceExams}
+          />
+        )}
       </div>
       {isContentPanelOpen && (
         <div className="border  rounded-lg px-4 py-3 w-md flex flex-col gap-4">

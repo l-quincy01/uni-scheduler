@@ -54,7 +54,7 @@ export function DateNavigator({ view, events }: IProps) {
         >
           {month} {year}
         </motion.span>
-        <AnimatePresence mode="wait">
+        {/* <AnimatePresence mode="wait">
           <MotionBadge
             key={eventCount}
             variant="secondary"
@@ -65,7 +65,7 @@ export function DateNavigator({ view, events }: IProps) {
           >
             {eventCount} events
           </MotionBadge>
-        </AnimatePresence>
+        </AnimatePresence> */}
       </div>
 
       <div className="flex items-center gap-2">
