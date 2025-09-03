@@ -1,8 +1,24 @@
 import SiteHeader from "@/components/site-header/site-header";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import React from "react";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddSchedule from "@/components/Modals/AddSchedule";
 
 export default function Layout() {
+  const { pathname } = useLocation();
+  console.log(pathname);
+
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2 items-center">
@@ -10,6 +26,32 @@ export default function Layout() {
           <SiteHeader />
 
           <div className="px-8">
+            {pathname === "/" ? (
+              <div className="flex flex-row justify-end">
+                <Dialog>
+                  <DialogTrigger>
+                    <Button variant="secondary">
+                      Schedule <Plus size={20} />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="scale-90">
+                    {/* <DialogHeader>
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader> */}
+                    <AddSchedule
+                      heading="Select Your Exam Modules"
+                      modules={dummyModules}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+            ) : (
+              <></>
+            )}
             <Outlet />
           </div>
         </div>
@@ -17,3 +59,47 @@ export default function Layout() {
     </div>
   );
 }
+
+const dummyModules = [
+  {
+    category: "Psychology",
+    exams: [
+      {
+        title: "Masters in Counselling Psychology Paper 1: Assessment",
+        date: "Thu - 23 October 2025",
+        time: "AM (09H00)",
+      },
+      {
+        title:
+          "Organisational Psychology Honours - Occupational Health & Wellbeing",
+        date: "Thu - 23 October 2025",
+        time: "AM (09H00)",
+      },
+      {
+        title: "Psychology 202 Paper 2",
+        date: "Thu - 23 October 2025",
+        time: "AM (09H00)",
+      },
+    ],
+  },
+  {
+    category: "Math",
+    exams: [
+      {
+        title: "Mat314",
+        date: "Thu - 23 October 2025",
+        time: "AM (09H00)",
+      },
+      {
+        title: "Mat301",
+        date: "Thu - 23 October 2025",
+        time: "AM (09H00)",
+      },
+      {
+        title: "Mat202",
+        date: "Thu - 23 October 2025",
+        time: "AM (09H00)",
+      },
+    ],
+  },
+];

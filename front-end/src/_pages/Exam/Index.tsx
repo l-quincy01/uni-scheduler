@@ -90,6 +90,7 @@ export default function Index() {
           <Dialog>
             <DialogTrigger>
               <Button variant="secondary">
+                Exam
                 <Plus size={20} />
               </Button>
             </DialogTrigger>
