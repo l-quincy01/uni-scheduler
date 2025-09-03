@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -37,6 +37,8 @@ export interface AddScheduleProps {
 
 export default function AddSchedule({ modules, heading }: AddScheduleProps) {
   const [selectedModules, setSelectedModules] = useState<exams[]>([]);
+  const [scheduleTitle, setScheduleTitle] = useState("");
+  const [showValidation, setShowValidation] = useState(false);
 
   const handleSelect = (exam: exams) => {
     if (!selectedModules.find((item) => item.title === exam.title)) {
@@ -48,15 +50,34 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
     setSelectedModules(selectedModules.filter((exam) => exam.title !== title));
   };
 
+  const handleCreate = () => {
+    setShowValidation(true);
+
+    if (scheduleTitle.trim().length >= 3 && selectedModules.length > 0) {
+      console.log({
+        scheduleTitle,
+        selectedModules,
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col items-start gap-4">
       <div className="gap-2 flex flex-col w-full">
-        <Label htmlFor="Schedule Name">Schedule Name</Label>
+        <div className="flex flex-row gap-1">
+          <Label htmlFor="Schedule Name">Schedule Name</Label>
+          {showValidation && scheduleTitle.trim().length < 3 && (
+            <span className="text-red-500 text-sm">
+              *Schedule name must contain at least 3 characters
+            </span>
+          )}
+        </div>
         <Input
           className="w-1/2"
           id="Schedule Name"
           type="text"
           placeholder="Schedule name"
+          onChange={(e) => setScheduleTitle(e.target.value)}
         />
       </div>
 
@@ -76,7 +97,7 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
                 <CommandEmpty>No results found.</CommandEmpty>
 
                 {modules.map((mod, index) => (
-                  <React.Fragment key={index}>
+                  <>
                     <CommandGroup heading={mod.category}>
                       {mod.exams.map((exam, idx) => (
                         <CommandItem
@@ -95,7 +116,7 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
                       ))}
                     </CommandGroup>
                     <CommandSeparator />
-                  </React.Fragment>
+                  </>
                 ))}
               </CommandList>
             </Command>
@@ -103,7 +124,16 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
         </Select>
       </div>
 
-      <div className="text-sm font-semibold">Modules</div>
+      <div className="flex flex-row gap-1">
+        <div className="text-sm font-semibold text-muted-foreground">
+          Modules{" "}
+        </div>
+        {showValidation && selectedModules.length === 0 && (
+          <span className="text-red-500 text-[0.75rem]">
+            *Select at least 1 module
+          </span>
+        )}
+      </div>
       {selectedModules.length === 0 ? (
         <span className="text-sm text-muted-foreground self-center">
           Nothing added
@@ -135,7 +165,7 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
         <Button
           variant="secondary"
           className="flex flex-row gap-1 items-center cursor-pointer"
-          onClick={() => console.log(selectedModules)}
+          onClick={handleCreate}
         >
           <CalendarFold size={14} /> Create Schedule
         </Button>

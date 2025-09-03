@@ -34,7 +34,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 /**
  * Represents an item within a Kanban column.
@@ -81,6 +81,7 @@ export interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ columns }: KanbanBoardProps) {
+  const { pathname } = useLocation();
   return (
     <div className="flex flex-row gap-6 overflow-x-auto">
       {columns.map((column, index) => (
@@ -170,14 +171,18 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                   </div>
                 )}
 
-                <Link to={"content"}>
-                  <Button
-                    variant="outline"
-                    className="w-fit h-fit py-1 px-1 cursor-pointer"
-                  >
-                    Practice
-                  </Button>
-                </Link>
+                {pathname === "/" ? (
+                  <></>
+                ) : (
+                  <Link to={"content"}>
+                    <Button
+                      variant="outline"
+                      className="w-fit h-fit py-1 px-1 cursor-pointer"
+                    >
+                      Practice
+                    </Button>
+                  </Link>
+                )}
               </div>
             </li>
           ))}

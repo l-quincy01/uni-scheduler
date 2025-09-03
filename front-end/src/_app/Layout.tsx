@@ -35,13 +35,6 @@ export default function Layout() {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="scale-90">
-                    {/* <DialogHeader>
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                <DialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </DialogDescription>
-              </DialogHeader> */}
                     <AddSchedule
                       heading="Select Your Exam Modules"
                       modules={dummyModules}

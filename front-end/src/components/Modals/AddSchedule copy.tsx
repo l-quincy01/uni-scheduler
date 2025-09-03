@@ -100,24 +100,6 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
         <Badge className="truncate" variant="secondary">
           MAT301
         </Badge>
-        <Badge className="truncate" variant="secondary">
-          Psychology 211
-        </Badge>
-        <Badge className="truncate" variant="secondary">
-          Organisational Psychology Honours - Occupational Health & Wellbeing
-        </Badge>
-        <Badge className="truncate" variant="secondary">
-          MAT301
-        </Badge>
-        <Badge className="truncate" variant="secondary">
-          PS 211
-        </Badge>{" "}
-        <Badge className="truncate" variant="secondary">
-          CS112
-        </Badge>
-        <Badge className="truncate" variant="secondary">
-          Psychology 211
-        </Badge>
       </div>
 
       <div className="w-full gap-8 justify-between">
