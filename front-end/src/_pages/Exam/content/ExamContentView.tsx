@@ -1,10 +1,12 @@
 import MockExam from "@/components/Exam/ExamView/MockExam";
 import type { Questions } from "@/models/Exam/ExamQuestionsModel";
-import React from "react";
+import React, { useRef } from "react";
 
 export default function ExamContentView() {
+  const downloadableContent = useRef(null);
+
   return (
-    <div>
+    <div ref={downloadableContent}>
       <MockExam questions={data_mockExam_algebra_claude} />
     </div>
   );

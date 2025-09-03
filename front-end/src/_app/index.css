@@ -144,3 +144,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/*Keeping components legible when exporting/downloading as PDFS */
+.force-light-mode {
+  background-color: white !important;
+  color: black !important;
+   /* min-width: 407px !important; 
+   min-height:632px  !important;  */
+}
+
+.force-light-mode * {
+  background-color: white !important;
+  color: black !important;
+  border-color: transparent !important;
+    /* min-width: 407px !important; 
+   min-height:632px  !important;  */
+
+}

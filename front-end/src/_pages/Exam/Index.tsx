@@ -1,7 +1,14 @@
 "use client";
 
 import { Link, Outlet, useLocation } from "react-router";
-import { Archive, CalendarFold, Kanban, Plus, SlashIcon } from "lucide-react";
+import {
+  Archive,
+  CalendarFold,
+  Download,
+  Kanban,
+  Plus,
+  SlashIcon,
+} from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -32,6 +39,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useContentPanel } from "@/_app/Context/ContentPanelContext";
 import { useCourseCalendar } from "@/_app/Context/CourseCalendarContext";
+import { handleDownloadPDF } from "@/utils/pdfExport";
 
 function isObjectId(segment: string) {
   return /^[0-9a-fA-F]{24}$/.test(segment);
@@ -90,7 +98,7 @@ export default function Index() {
   }
 
   const pathnameLastSegment = visibleSegments[visibleSegments.length - 1];
-
+  console.log("Length: " + visibleSegments.length);
   function renderNav() {
     switch (pathnameLastSegment) {
       case "content":
@@ -185,6 +193,18 @@ export default function Index() {
             })}
           </BreadcrumbList>
         </Breadcrumb>
+        {visibleSegments.length >= 3 && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div onClick={handleDownloadPDF} className="p-0 m-0">
+                <Download size={18} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Download</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
         {renderNav()}
       </div>
 
