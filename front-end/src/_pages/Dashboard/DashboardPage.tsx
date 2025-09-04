@@ -3,9 +3,16 @@ import Kanban from "@/components/Dashboard/Kanban/Kanban";
 export default function DashboardPage() {
   return (
     <div>
-      <div>
+      {!KanbanData ? (
         <Kanban boards={KanbanData} />
-      </div>
+      ) : (
+        <div className="flex flex-col items-center">
+          <span className="text-xl font-semibold">No Schedule Added.</span>
+          <span className="text-md text-muted-foreground">
+            Click Add Schedule Button To Start
+          </span>
+        </div>
+      )}
     </div>
   );
 }
