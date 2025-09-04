@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";
+import { ModeToggle } from "../theme/theme-toggle";
+import { Testimonial } from "../ui/testimonial-card";
 
 const transitionVariants = {
   item: {
@@ -27,6 +29,36 @@ const transitionVariants = {
 };
 
 export function HeroSection() {
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      role: "Product Manager",
+      company: "Amazun",
+      rating: 5,
+      image: "https://i.pravatar.cc/150?u=sarah",
+      testimonial:
+        "This library has completely transformed how we build our UI components. The attention to detail and smooth animations make our application stand out. Highly recommended!",
+    },
+    {
+      name: "John Doe",
+      role: "Software Engineer",
+      company: "Goggle",
+      rating: 4,
+      image: "https://i.pravatar.cc/150?u=john",
+      testimonial:
+        "The components are well documented and easy to customize. The code quality is top-notch and the support is excellent. I'm very happy with my purchase.",
+    },
+    {
+      name: "Emily Chen",
+      role: "UX Designer",
+      company: "Microsift",
+      rating: 5,
+      image: "https://i.pravatar.cc/150?u=emily",
+      testimonial:
+        "The accessibility features and design system consistency are impressive. It's saved us countless hours in development time.",
+    },
+  ];
+
   return (
     <>
       <HeroHeader />
@@ -67,15 +99,7 @@ export function HeroSection() {
                 },
               }}
               className="absolute inset-0 -z-20"
-            >
-              {/* <img
-                src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
-                alt="background"
-                className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
-                width="3276"
-                height="4095"
-              /> */}
-            </AnimatedGroup>
+            ></AnimatedGroup>
             <div
               aria-hidden
               className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]"
@@ -83,29 +107,16 @@ export function HeroSection() {
             <div className="mx-auto max-w-7xl px-6">
               <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
                 <AnimatedGroup variants={transitionVariants}>
-                  <h1 className="mt-8 max-w-2xl mx-auto text-balance text-2xl md:text-4xl lg:mt-16 xl:text-[5.25rem]">
-                    Modern Solutions for Customer Engagement
+                  <h1 className="mt-8 max-w-xl mx-auto text-balance text-6xl md:text-7xl lg:mt-16 xl:text-[5.25rem]">
+                    Exam Scheduler & Practice Generator
                   </h1>
                   <p className="mx-auto mt-8 max-w-2xl text-balance text-lg">
-                    Highly customizable components for building modern websites
-                    and applications that look and feel the way you mean it.
+                    Automatically generate personalised study and practice
+                    schedules with web-scraped university timetables. Upload
+                    your notes and past papers to create tailored exam content
+                    powered by AI.
                   </p>
                 </AnimatedGroup>
-
-                <AnimatedGroup
-                  variants={{
-                    container: {
-                      visible: {
-                        transition: {
-                          staggerChildren: 0.05,
-                          delayChildren: 0.75,
-                        },
-                      },
-                    },
-                    ...transitionVariants,
-                  }}
-                  className="mt-12 flex flex-col items-center justify-center gap-2 md:flex-row"
-                ></AnimatedGroup>
               </div>
             </div>
           </div>
@@ -117,16 +128,16 @@ export function HeroSection() {
                 to="/"
                 className="block text-sm duration-150 hover:opacity-75"
               >
-                <span> Meet Our Customers</span>
+                <span> Trusted by</span>
 
                 <ChevronRight className="ml-1 inline-block size-3" />
               </Link>
             </div>
-            <div className="group-hover:blur-xs mx-auto mt-12 grid max-w-2xl grid-cols-4 gap-x-12 gap-y-8 transition-all duration-500 group-hover:opacity-50 sm:gap-x-16 sm:gap-y-14">
+            <div className="group-hover:blur-xs mx-auto mt-12 flex flex-row justify-center items-center max-w-2xl  gap-x-12  transition-all duration-500 group-hover:opacity-50 ">
               <div className="flex">
                 <img
-                  className="mx-auto h-5 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/nvidia.svg"
+                  className="mx-auto h-10 w-fit dark:invert"
+                  src="/Images/Logos/rhodeslogo.png"
                   alt="Nvidia Logo"
                   height="20"
                   width="auto"
@@ -135,65 +146,19 @@ export function HeroSection() {
 
               <div className="flex">
                 <img
-                  className="mx-auto h-4 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/column.svg"
+                  className="mx-auto h-15 w-fit dark:invert"
+                  src="/Images/Logos/uctlogo.png"
                   alt="Column Logo"
-                  height="16"
-                  width="auto"
-                />
-              </div>
-              <div className="flex">
-                <img
-                  className="mx-auto h-4 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/github.svg"
-                  alt="GitHub Logo"
-                  height="16"
-                  width="auto"
-                />
-              </div>
-              <div className="flex">
-                <img
-                  className="mx-auto h-5 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/nike.svg"
-                  alt="Nike Logo"
                   height="20"
                   width="auto"
                 />
               </div>
               <div className="flex">
                 <img
-                  className="mx-auto h-5 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/lemonsqueezy.svg"
-                  alt="Lemon Squeezy Logo"
+                  className="mx-auto h-15 w-fit dark:invert"
+                  src="/Images/Logos/sulogo.png"
+                  alt="Column Logo"
                   height="20"
-                  width="auto"
-                />
-              </div>
-              <div className="flex">
-                <img
-                  className="mx-auto h-4 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/laravel.svg"
-                  alt="Laravel Logo"
-                  height="16"
-                  width="auto"
-                />
-              </div>
-              <div className="flex">
-                <img
-                  className="mx-auto h-7 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/lilly.svg"
-                  alt="Lilly Logo"
-                  height="28"
-                  width="auto"
-                />
-              </div>
-
-              <div className="flex">
-                <img
-                  className="mx-auto h-6 w-fit dark:invert"
-                  src="https://html.tailus.io/blocks/customers/openai.svg"
-                  alt="OpenAI Logo"
-                  height="24"
                   width="auto"
                 />
               </div>
@@ -236,14 +201,6 @@ const HeroHeader = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              {/* <Link
-                to="/"
-                aria-label="home"
-                className="flex items-center space-x-2"
-              >
-                <Logo />
-              </Link> */}
-
               <button
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState == true ? "Close Menu" : "Open Menu"}
@@ -285,7 +242,7 @@ const HeroHeader = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
+                {/* <Button
                   asChild
                   variant="outline"
                   size="sm"
@@ -303,16 +260,14 @@ const HeroHeader = () => {
                   <Link to="#">
                     <span>Sign Up</span>
                   </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
-                  <Link to="#">
+                </Button> */}
+                <Button asChild size="sm">
+                  <Link to="/signin">
                     <span>Get Started</span>
                   </Link>
                 </Button>
+
+                <ModeToggle />
               </div>
             </div>
           </div>
