@@ -156,39 +156,9 @@ export default function ProfileContent({
         <Card className="bg-accent/20 border-none">
           <CardHeader>
             <CardTitle>Account Settings</CardTitle>
-            <CardDescription>
-              Manage your account preferences and subscription.
-            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label className="text-base">Account Status</Label>
-                <p className="text-muted-foreground text-sm">
-                  Your account is currently {accountStatus.toLowerCase()}
-                </p>
-              </div>
-              <Badge
-                variant="outline"
-                className={
-                  accountStatus === "Active"
-                    ? "border-green-200 bg-green-50 text-green-700"
-                    : "border-red-200 bg-red-50 text-red-700"
-                }
-              >
-                {accountStatus}
-              </Badge>
-            </div> */}
             <Separator />
-            {/* <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label className="text-base">Subscription Plan</Label>
-                <p className="text-muted-foreground text-sm">
-                  {subscriptionPlan} - {subscriptionPrice}
-                </p>
-              </div>
-              <Button variant="outline">Manage Subscription</Button>
-            </div> */}
           </CardContent>
         </Card>
 
