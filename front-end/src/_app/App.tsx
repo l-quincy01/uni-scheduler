@@ -1,59 +1,51 @@
+// src/App.tsx
 import { Route, Routes } from "react-router";
-
-import Layout from "@/_app/Layout";
 import { ThemeProvider } from "./providers/theme/theme-provider";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import CalendarPage from "@/_pages/Calendar/CalendarPage";
+
 import DashboardPage from "@/_pages/Dashboard/DashboardPage";
-
+import CalendarPage from "@/_pages/Calendar/CalendarPage";
 import ProfilePage from "@/_pages/Profile/ProfilePage";
-
 import ExamPage from "@/_pages/Exam/ExamPage";
 import ExamAgenda from "@/_pages/Exam/agenda/ExamAgenda";
 import ExamContent from "@/_pages/Exam/content/ExamContent";
 import Index from "@/_pages/Exam/Index";
 import ExamContentView from "@/_pages/Exam/content/ExamContentView";
-import { ContentPanelProvider } from "./Context/ContentPanelContext";
-import { CourseCalendarProvider } from "./Context/CourseCalendarContext";
+import { GuestOnly, RequireAuth } from "./Auth/RouteGuard";
+import ProtectedAppShell from "./Auth/ProtectedShell";
+import { AuthProvider } from "./Auth/AuthContext";
+import IndexPage from "@/_pages/Public/IndexPage";
+import AuthPage from "@/_pages/Public/AuthPage";
 
-function App() {
+export default function App() {
   return (
-    <>
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 52)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="floating" collapsible="icon" />
-        <CourseCalendarProvider>
-          <ContentPanelProvider>
-            <ThemeProvider>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<DashboardPage />}></Route>
+    <AuthProvider>
+      <ThemeProvider>
+        <Routes>
+          {/* Public-only */}
+          <Route element={<GuestOnly />}>
+            <Route path="/landing" element={<IndexPage />} />
+            <Route path="/signin" element={<AuthPage />} />
+          </Route>
 
-                  <Route path="/calendar" element={<CalendarPage />}></Route>
+          {/* Protected */}
+          <Route element={<RequireAuth />}>
+            <Route element={<ProtectedAppShell />}>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
 
-                  <Route path="/profile" element={<ProfilePage />}></Route>
+              <Route path="exam/:id" element={<Index />}>
+                <Route index element={<ExamPage />} />
+                <Route path="agenda" element={<ExamAgenda />} />
+                <Route path="content" element={<ExamContent />} />
+                <Route path="content/*" element={<ExamContentView />} />
+              </Route>
+            </Route>
+          </Route>
 
-                  <Route path="exam/:id" element={<Index />}>
-                    <Route index element={<ExamPage />}></Route>
-                    <Route path="agenda" element={<ExamAgenda />} />
-                    <Route path="content" element={<ExamContent />} />
-                    <Route path="content/*" element={<ExamContentView />} />
-                  </Route>
-                </Route>
-              </Routes>
-            </ThemeProvider>
-          </ContentPanelProvider>
-        </CourseCalendarProvider>
-      </SidebarProvider>
-    </>
+          <Route path="*" element={<IndexPage />} />
+        </Routes>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
-
-export default App;
