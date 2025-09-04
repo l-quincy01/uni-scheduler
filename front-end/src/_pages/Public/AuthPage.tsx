@@ -1,24 +1,21 @@
 import { LoginForm } from "@/components/authentication/components/login-form";
 import { UserAuthForm } from "@/components/authentication/components/user-auth-form";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { Link } from "react-router";
 
 export default function AuthPage() {
-  const { showLogin, setShowlogin } = useState(false);
+  const [showLogin, setShowlogin] = useState(false);
 
   return (
     <div className="relative container flex-1 shrink-0 items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <div
+      <Button
         onClick={() => setShowlogin((p) => !p)}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "absolute top-4 right-4 md:top-8 md:right-8"
-        )}
+        className="absolute top-4 right-4 md:top-8 md:right-8"
       >
         Login
-      </div>
+      </Button>
       <div className="text-primary relative hidden h-full flex-col p-10 lg:flex dark:border-r">
         <div
           className="bg-primary/5 absolute inset-0"
