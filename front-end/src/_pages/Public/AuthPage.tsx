@@ -31,14 +31,16 @@ export default function AuthPage() {
       </div>
       <div className="flex items-center justify-center lg:h-screen lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center gap-6 sm:w-[350px]">
-          <div className="flex flex-col gap-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Create an account
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              Enter your email below to create your account
-            </p>
-          </div>
+          {!showLogin && (
+            <div className="flex flex-col gap-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Create an account
+              </h1>
+              <p className="text-muted-foreground text-sm">
+                Enter your email below to create your account
+              </p>
+            </div>
+          )}
           {showLogin ? <LoginForm /> : <UserAuthForm />}
           <Link to={"/landing"}>
             <Button variant="secondary">Back</Button>

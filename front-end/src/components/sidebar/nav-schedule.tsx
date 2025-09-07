@@ -29,7 +29,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import AddSchedule from "../Modals/AddSchedule";
+import AddSchedule from "../Modals/ExamSchedule/AddSchedule";
 
 export function NavSchedule({
   items,

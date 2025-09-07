@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 import { CourseCalendarProvider } from "../Context/CourseCalendarContext";
 import { ContentPanelProvider } from "../Context/ContentPanelContext";
+import Layout from "../Layout";
 
 export default function ProtectedAppShell() {
   return (
@@ -19,7 +20,7 @@ export default function ProtectedAppShell() {
       <AppSidebar variant="floating" collapsible="icon" />
       <CourseCalendarProvider>
         <ContentPanelProvider>
-          <Outlet />
+          <Layout />
         </ContentPanelProvider>
       </CourseCalendarProvider>
     </SidebarProvider>

@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import AddSchedule from "@/components/Modals/AddSchedule";
+import AddSchedule from "@/components/Modals/ExamSchedule/AddSchedule";
 import AddExamModal from "@/components/Modals/AddExamModal";
 import {
   Tooltip,

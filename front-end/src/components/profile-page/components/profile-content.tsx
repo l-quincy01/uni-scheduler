@@ -57,10 +57,6 @@ interface ProfileContentProps {
   email: string;
   phone: string;
   school: string;
-  subscriptionPlan: string;
-  subscriptionPrice: string;
-  accountStatus: "Active" | "Inactive";
-  joined: string;
 }
 
 export default function ProfileContent({
@@ -69,10 +65,6 @@ export default function ProfileContent({
   email,
   phone,
   school,
-  subscriptionPlan,
-  subscriptionPrice,
-  accountStatus,
-  joined,
 }: ProfileContentProps) {
   const [editingProfile, setEditingProfile] = useState(false);
 
@@ -81,8 +73,6 @@ export default function ProfileContent({
       <TabsList className="grid w-full grid-cols-2 bg-accent/20 border-none">
         <TabsTrigger value="personal">Personal</TabsTrigger>
         <TabsTrigger value="account">Account</TabsTrigger>
-        {/* <TabsTrigger value="security">Security</TabsTrigger>
-        <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
       </TabsList>
 
       {/* Personal Information */}

@@ -39,7 +39,7 @@ export default function SiteHeader() {
   }
 
   const pathnameBase = getLocationBase(pathname);
-
+  console.log(pathnameBase);
   function renderHeaderTitle() {
     switch (pathnameBase) {
       case "exam":

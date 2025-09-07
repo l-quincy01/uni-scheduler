@@ -8,11 +8,8 @@ export default function ProfilePage() {
       <ProfileHeader
         name="John Doe"
         email="john.doe@example.com"
-        university="Rhodes University"
-        joined="March 2023"
+        school="Rhodes University"
         avatarUrl="https://preview.redd.it/the-new-discord-default-profile-pictures-v0-uqvmqo1cdj7f1.png?width=1024&auto=webp&s=6c1ac3264c8febf1eb3d2bdd0534eef83f2b94f3"
-        initials="JD"
-        badge="Pro Member"
       />
       <ProfileContent
         firstName="John"
@@ -20,10 +17,6 @@ export default function ProfilePage() {
         email="john.doe@example.com"
         phone="+27 123456789"
         school="Rhodes University"
-        subscriptionPlan="Pro Plan"
-        subscriptionPrice="$29/month"
-        accountStatus="Active"
-        joined="March 2023"
       />
     </div>
   );

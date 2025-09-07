@@ -13,11 +13,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddSchedule from "@/components/Modals/AddSchedule";
+import AddSchedule from "@/components/Modals/ExamSchedule/AddSchedule";
+import AddScheduleLoader from "@/components/Modals/ExamSchedule/AddScheduleLoader";
 
 export default function Layout() {
   const { pathname } = useLocation();
-  console.log(pathname);
+
+  console.log("HELLLLLOOOOOOOO-" + pathname);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -35,10 +37,11 @@ export default function Layout() {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="scale-90">
-                    <AddSchedule
+                    {/* <AddSchedule
                       heading="Select Your Exam Modules"
                       modules={dummyModules}
-                    />
+                    /> */}
+                    <AddScheduleLoader />
                   </DialogContent>
                 </Dialog>
               </div>
