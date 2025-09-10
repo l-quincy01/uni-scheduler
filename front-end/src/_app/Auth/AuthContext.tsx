@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { loginUser, logoutUser, refreshAccessToken } from "@/lib/auth";
+import { loginUser, logoutUser, refreshAccessToken } from "@/_api/Auth/auth";
 
 type User = { id: number; email: string } | null;
 

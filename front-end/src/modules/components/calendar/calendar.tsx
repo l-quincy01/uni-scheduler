@@ -32,7 +32,7 @@ import { CalendarProvider } from "@/modules/components/calendar/contexts/calenda
 import { DndProvider } from "@/modules/components/calendar/contexts/dnd-context";
 import { CalendarHeader } from "@/modules/components/calendar/header/calendar-header";
 import { getEvents, getUsers } from "@/modules/components/calendar/requests";
-import type { CalendarEvent, CalendarUser } from "@/_api/requests";
+import type { CalendarEvent, CalendarUser } from "@/_api/Auth/requests";
 
 export function Calendar() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);

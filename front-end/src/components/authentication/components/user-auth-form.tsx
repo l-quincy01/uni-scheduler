@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoaderIcon } from "lucide-react";
-import { registerUser } from "@/lib/auth";
+import { registerUser } from "@/_api/Auth/auth";
 
 type Props = React.ComponentProps<"div"> & {
   onSuccess?: (user: { id: number; email: string }) => void;
