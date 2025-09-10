@@ -24,19 +24,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const refreshToken = localStorage.getItem("refreshToken");
     const accessToken = localStorage.getItem("accessToken");
 
-    if (savedUser) setUser(JSON.parse(savedUser));
-    setLoading(false);
-
-    // Optional: eager refresh on mount if no accessToken
-    if (!accessToken && refreshToken) {
-      refreshAccessToken(refreshToken)
-        .then(({ accessToken }) =>
-          localStorage.setItem("accessToken", accessToken)
-        )
-        .catch(() => {
-          // silent failure; user may need to login again later
-        });
+    async function init() {
+      if (accessToken) {
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_AUTH_API_BASE}/auth/me`,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data.user);
+            localStorage.setItem("auth_user", JSON.stringify(data.user));
+          } else if (refreshToken) {
+            const { accessToken: newAT } = await refreshAccessToken(
+              refreshToken
+            );
+            localStorage.setItem("accessToken", newAT);
+          }
+        } catch {
+          // fallback to no user
+        }
+      } else if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+      setLoading(false);
     }
+
+    init();
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -49,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signOut = async () => {
     const rt = localStorage.getItem("refreshToken") || "";
-    await logoutUser(rt);
+    await logoutUser(rt, true); // revoke all refresh tokens (logout everywhere)
     localStorage.removeItem("auth_user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");

@@ -1,23 +1,28 @@
 import type { TEventColor } from "@/modules/components/calendar/types";
 
 export interface IUser {
-	id: string;
-	name: string;
-	picturePath: string | null;
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string | null;
+  school?: string | null;
+  avatarUrl?: string | null;
 }
 
 export interface IEvent {
-	id: number;
-	startDate: string;
-	endDate: string;
-	title: string;
-	color: TEventColor;
-	description: string;
-	user: IUser;
+  id: string;
+  scheduleId: string;
+  title: string;
+  description: string;
+  color: string;
+  startDate: string; // ISO
+  endDate: string; // ISO
+  user: IUser | null;
 }
 
 export interface ICalendarCell {
-	day: number;
-	currentMonth: boolean;
-	date: Date;
+  day: number;
+  currentMonth: boolean;
+  date: Date;
 }

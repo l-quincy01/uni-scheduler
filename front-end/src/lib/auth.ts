@@ -61,11 +61,11 @@ export async function refreshAccessToken(refreshToken: string) {
   return data as { accessToken: string };
 }
 
-export async function logoutUser(refreshToken: string) {
+export async function logoutUser(refreshToken: string, all: boolean = false) {
   // Best-effort revoke
   await fetch(`${BASE}/auth/logout`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
+    body: JSON.stringify({ refreshToken, all }),
   }).catch(() => {});
 }
