@@ -17,7 +17,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
-import pdfIcon from "@/assets/Icons/ContentPanel/pdf_icon.png";
+import pdfIcon from "assets/Icons/ContentPanel/pdf_icon.png";
 import { Button } from "../ui/button";
 import { ArchiveIcon, ChevronDown } from "lucide-react";
 

@@ -1,4 +1,4 @@
-import MarkdownViewer from "@/components/MarkdownViewer/MarkdownViewer";
+import MarkdownViewer from "@/components/Exam/ExamView/components/MarkdownViewer/MarkdownViewer";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 
