@@ -20,3 +20,18 @@ export interface ICalendarCell {
   currentMonth: boolean;
   date: Date;
 }
+
+export interface IScheduleItemInput {
+  title: string;
+  description: string;
+  color: TEventColor;
+  startDate: string;
+  endDate: string;
+}
+
+export interface IScheduleInput {
+  title: string;
+  timezone: string;
+  events: IScheduleItemInput[];
+  exams: IScheduleItemInput[];
+}

@@ -1,11 +1,12 @@
 "use client";
 
 import type React from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useLocalStorage } from "@/components/Calendar/modules/components/calendar/hooks";
 import type {
   IEvent,
   IUser,
+  IScheduleInput,
 } from "@/components/Calendar/modules/components/calendar/interfaces";
 import type {
   TCalendarView,
@@ -54,14 +55,14 @@ const CalendarContext = createContext({} as ICalendarContext);
 
 export function CalendarProvider({
   children,
-  // users,
   events,
+  schedules,
   badge = "colored",
   view = "day",
 }: {
   children: React.ReactNode;
-  // users: IUser[];
-  events: IEvent[];
+  events?: IEvent[];
+  schedules?: IScheduleInput[];
   view?: TCalendarView;
   badge?: "dot" | "colored";
 }) {
@@ -93,8 +94,51 @@ export function CalendarProvider({
   );
   const [selectedColors, setSelectedColors] = useState<TEventColor[]>([]);
 
-  const [allEvents, setAllEvents] = useState<IEvent[]>(events || []);
-  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>(events || []);
+  const inputEvents = useMemo<IEvent[]>(() => {
+    if (schedules && schedules.length > 0) {
+      let id = 1;
+      const defaultUser: IUser = {
+        id: "default-user",
+        name: "Schedule",
+        picturePath: null,
+      };
+
+      const allowedColors: TEventColor[] = [
+        "blue",
+        "green",
+        "red",
+        "yellow",
+        "purple",
+        "orange",
+      ];
+
+      const flatten = schedules.flatMap((s) => [
+        ...(s.events ?? []),
+        ...(s.exams ?? []),
+      ]);
+
+      return flatten.map((e) => ({
+        id: id++,
+        title: e.title,
+        description: e.description,
+        startDate: e.startDate,
+        endDate: e.endDate,
+        color: allowedColors.includes(e.color as TEventColor)
+          ? (e.color as TEventColor)
+          : "blue",
+        user: defaultUser,
+      }));
+    }
+    return events ?? [];
+  }, [schedules, events]);
+
+  const [allEvents, setAllEvents] = useState<IEvent[]>(inputEvents);
+  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>(inputEvents);
+
+  useEffect(() => {
+    setAllEvents(inputEvents);
+    setFilteredEvents(inputEvents);
+  }, [inputEvents]);
 
   const updateSettings = (newPartialSettings: Partial<CalendarSettings>) => {
     setSettings({
