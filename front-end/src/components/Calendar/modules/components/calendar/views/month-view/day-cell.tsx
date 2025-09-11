@@ -20,6 +20,7 @@ import { MonthEventBadge } from "@/components/Calendar/modules/components/calend
 import { AddEditEventDialog } from "../../dialogs/add-edit-event-dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { TiDocumentText } from "react-icons/ti";
 
 interface IProps {
   cell: ICalendarCell;
@@ -94,6 +95,7 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
             {showBullet && (
               <EventBullet className="lg:hidden" color={event.color} />
             )}
+
             <MonthEventBadge
               className="hidden lg:flex"
               event={event}

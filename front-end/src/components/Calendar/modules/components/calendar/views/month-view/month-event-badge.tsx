@@ -8,6 +8,8 @@ import { DraggableEvent } from "@/components/Calendar/modules/components/calenda
 import { formatTime } from "@/components/Calendar/modules/components/calendar/helpers";
 import type { IEvent } from "@/components/Calendar/modules/components/calendar/interfaces";
 import { EventBullet } from "@/components/Calendar/modules/components/calendar/views/month-view/event-bullet";
+import { TiDocumentText } from "react-icons/ti";
+import { SlBookOpen } from "react-icons/sl";
 
 const eventBadgeVariants = cva(
   "mx-1 flex size-auto h-6.5 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs",
@@ -111,13 +113,19 @@ export function MonthEventBadge({
             {!["middle", "last"].includes(position) &&
               badgeVariant === "dot" && <EventBullet color={event.color} />}
 
+            {event.description === "Exam" ? (
+              <TiDocumentText size={12} />
+            ) : (
+              <SlBookOpen size={12} />
+            )}
             {renderBadgeText && (
-              <p className="flex-1 truncate font-semibold">
+              <p className="flex-1 truncate font-semibold ">
                 {eventCurrentDay && (
                   <span className="text-xs">
                     Day {eventCurrentDay} of {eventTotalDays} •{" "}
                   </span>
                 )}
+
                 {event.title}
               </p>
             )}
