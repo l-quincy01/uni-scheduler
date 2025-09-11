@@ -28,7 +28,7 @@ interface ICalendarContext {
   selectedColors: TEventColor[];
   filterEventsBySelectedColors: (colors: TEventColor) => void;
   filterEventsBySelectedUser: (userId: IUser["id"] | "all") => void;
-  users: IUser[];
+  // users: IUser[];
   events: IEvent[];
   addEvent: (event: IEvent) => void;
   updateEvent: (event: IEvent) => void;
@@ -54,13 +54,13 @@ const CalendarContext = createContext({} as ICalendarContext);
 
 export function CalendarProvider({
   children,
-  users,
+  // users,
   events,
   badge = "colored",
   view = "day",
 }: {
   children: React.ReactNode;
-  users: IUser[];
+  // users: IUser[];
   events: IEvent[];
   view?: TCalendarView;
   badge?: "dot" | "colored";
@@ -194,7 +194,7 @@ export function CalendarProvider({
     setSelectedUserId,
     badgeVariant,
     setBadgeVariant,
-    users,
+    // users,
     selectedColors,
     filterEventsBySelectedColors,
     filterEventsBySelectedUser,

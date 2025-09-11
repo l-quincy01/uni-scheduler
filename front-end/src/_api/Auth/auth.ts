@@ -1,4 +1,11 @@
-export type RegisterPayload = { email: string; password: string };
+export type RegisterPayload = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  school: string;
+};
 export type LoginPayload = { email: string; password: string };
 export type LoginResponse = {
   user: { id: number; email: string };
@@ -17,7 +24,6 @@ export async function registerUser(payload: RegisterPayload) {
 
   const data = await res.json();
   if (!res.ok) {
-    // server  return {error: "..."} or zod issues
     const msg =
       data?.error?.[0]?.message ||
       data?.error?.message ||
@@ -26,7 +32,13 @@ export async function registerUser(payload: RegisterPayload) {
     throw new Error(msg);
   }
   return data as {
-    user: { id: number; email: string };
+    user: {
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+      phone: string;
+    };
     accessToken: string;
     refreshToken: string;
   };

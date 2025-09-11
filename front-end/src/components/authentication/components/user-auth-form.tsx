@@ -1,113 +1,178 @@
-"use client";
-
-import * as React from "react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LoaderIcon } from "lucide-react";
+
 import { registerUser } from "@/_api/Auth/auth";
+import { useState } from "react";
 
-type Props = React.ComponentProps<"div"> & {
-  onSuccess?: (user: { id: number; email: string }) => void;
-};
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export function UserAuthForm({ className, onSuccess, ...props }: Props) {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [confirm, setConfirm] = React.useState("");
-  const [error, setError] = React.useState<string | null>(null);
+export function UserAuthForm() {
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    school: "",
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e: React.SyntheticEvent) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
-    // basic client-side validation
-    if (!email || !password) {
-      setError("Email and password are required.");
+    if (
+      !form.email ||
+      !form.password ||
+      !form.firstName ||
+      !form.lastName ||
+      !form.phone ||
+      !form.school
+    ) {
+      setError("All fields are required");
       return;
     }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-    if (password !== confirm) {
-      setError("Passwords do not match.");
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
 
-    setIsLoading(true);
     try {
-      const res = await registerUser({ email, password });
-
-      // store tokens for now; later move refresh token to httpOnly cookie
-      localStorage.setItem("accessToken", res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-      localStorage.setItem("user", JSON.stringify(res.user));
-
-      onSuccess?.(res.user);
-      // or redirect: window.location.href = "/dashboard";
+      setLoading(true);
+      const userData = await registerUser({
+        email: form.email,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.phone,
+        school: form.school,
+      });
+      console.log("User registered:", userData);
     } catch (err: any) {
-      setError(err?.message ?? "Something went wrong. Please try again.");
+      setError(err.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit} className="grid gap-4">
-        <div className="grid gap-2">
+    <form onSubmit={handleSignup} className="flex flex-col gap-4">
+      <div className="flex gap-2">
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="firstName">First Name</Label>
+          <Input
+            id="firstName"
+            name="firstName"
+            placeholder="Enter your first name"
+            value={form.firstName}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="lastName">Last Name</Label>
+          <Input
+            id="lastName"
+            name="lastName"
+            placeholder="Enter your last name"
+            value={form.lastName}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            name="phone"
+            placeholder="080 123 4567"
+            value={form.phone}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="flex-1 space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
-            placeholder="name@example.com"
+            name="email"
             type="email"
-            autoCapitalize="none"
-            autoComplete="email"
-            autoCorrect="off"
-            disabled={isLoading}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="name@example.com"
+            value={form.email}
+            onChange={handleChange}
           />
         </div>
+      </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            placeholder=""
-            type="password"
-            autoComplete="new-password"
-            disabled={isLoading}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">School</Label>
+        <Select
+          value={form.school}
+          onValueChange={(value) =>
+            setForm((prev) => ({ ...prev, school: value }))
+          }
+        >
+          <SelectTrigger id="school" className="w-full">
+            <SelectValue placeholder="School" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>School</SelectLabel>
+              <SelectItem value="Rhodes University">
+                Rhodes University
+              </SelectItem>
+              <SelectItem value="University of Cape Town">
+                University of Cape Town
+              </SelectItem>
+              <SelectItem value="Stellenbosch">Stellenbosch</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          value={form.password}
+          onChange={handleChange}
+        />
+      </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="confirm">Confirm Password</Label>
-          <Input
-            id="confirm"
-            placeholder=""
-            type="password"
-            autoComplete="new-password"
-            disabled={isLoading}
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword">Confirm Password</Label>
+        <Input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm your password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+        />
+      </div>
 
-        {error && (
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        )}
-
-        <Button type="submit" disabled={isLoading}>
-          {isLoading && <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />}
-          Create account
-        </Button>
-      </form>
-    </div>
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Signing up…" : "Sign Up"}
+      </Button>
+    </form>
   );
 }

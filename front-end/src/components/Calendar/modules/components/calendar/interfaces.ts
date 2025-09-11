@@ -13,7 +13,6 @@ export interface IEvent {
   title: string;
   color: TEventColor;
   description: string;
-  user: IUser;
 }
 
 export interface ICalendarCell {
