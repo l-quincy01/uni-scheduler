@@ -279,7 +279,7 @@ app.post("/auth/logout", async (req, res) => {
     return res.status(401).json({ error: "Invalid/expired token" });
   }
 });
-app.get("/auth/me", requireAuth, async (req, res) => {
+app.get("/auth/me", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: Number(req.user.id) },
     select: { id: true, email: true, createdAt: true },

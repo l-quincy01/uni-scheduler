@@ -3,7 +3,7 @@ import Kanban from "@/components/Dashboard/Kanban/Kanban";
 export default function DashboardPage() {
   return (
     <div>
-      {!KanbanData ? (
+      {KanbanData ? (
         <Kanban boards={KanbanData} />
       ) : (
         <div className="flex flex-col items-center">
@@ -19,18 +19,26 @@ export default function DashboardPage() {
 
 export const KanbanData = [
   {
-    title: "Final year exams",
+    title: "3rd year Final Exams", // unite with schedule title
     data: [
       {
         id: "001",
-        title: "History",
-        colorDot: "bg-purple-600",
+        title: "Study: MAM 202 P2 - Linear Algebra", //combine events of the same subject
+        colorDot: "bg-blue-600", // unite with event object color
         items: [
           {
             id: 101,
-            title: "Exam: World War II & Aftermath",
-            type: "Exam",
-            date: "2025-11-10",
+            title: "Study: MAM 202 P2 - Linear Algebra (Session 1)", //unite with event object description
+            description: "Preparation for MAM 202 P2 - Linear Algebra",
+            type: "Study",
+            date: "2025-10-20",
+          },
+          {
+            id: 101,
+            title: "Study: MAM 202 P2 - Linear Algebra (Session 2)", //unite with event object description
+            description: "Preparation for MAM 202 P2 - Linear Algebra",
+            type: "Study",
+            date: "2025-10-23",
           },
         ],
       },

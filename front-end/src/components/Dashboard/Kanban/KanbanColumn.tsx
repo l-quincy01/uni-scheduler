@@ -18,6 +18,9 @@
  * @todo
  */
 
+import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router";
+
 /**
  * Props for the KanbanColumn component.
  *
@@ -42,6 +45,7 @@ export function KanbanColumn({
   count,
   children,
 }: KanbanColumnProps) {
+  const { pathname } = useLocation();
   return (
     <div
       className="flex flex-col rounded-xl w-fit bg-accent border border-neutral-200 dark:border-neutral-800 shadow-sm"
@@ -61,6 +65,18 @@ export function KanbanColumn({
           <span className="ml-auto text-xs text-neutral-500 dark:text-neutral-400">
             {count} item{count !== 1 && "s"}
           </span>
+        )}
+        {pathname === "/" ? (
+          <></>
+        ) : (
+          <Link to={"content"}>
+            <Button
+              variant="outline"
+              className="w-fit h-fit py-1 px-1 cursor-pointer"
+            >
+              Practice
+            </Button>
+          </Link>
         )}
       </header>
       <ul
