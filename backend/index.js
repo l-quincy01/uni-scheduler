@@ -116,10 +116,16 @@ app.post("/auth/register", async (req, res) => {
     const user = await prisma.user.create({ data: { email, passwordHash } });
     const profileData = { firstName, lastName, phone, school };
 
-    // ensure Mongo profile exists for this SQL user
-    await (
-      await esm("./src/services/ensureMongoUser.js")
-    ).ensureMongoUserProfile(user, profileData);
+    try {
+      await (
+        await esm("./src/services/ensureMongoUser.js")
+      ).ensureMongoUserProfile(user, profileData);
+    } catch (e) {
+      console.warn(
+        "[register] ensureMongoUserProfile failed (non-fatal)",
+        e?.message || e
+      );
+    }
 
     const jti = uuidv4();
     const accessToken = signAccessToken(user);
@@ -160,12 +166,26 @@ app.post("/auth/login", async (req, res) => {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
-    const ok = await argon2.verify(user.passwordHash, password);
+    let ok = false;
+    try {
+      ok = await argon2.verify(user.passwordHash, password);
+    } catch {
+      // If hash format is invalid or verify fails unexpectedly, treat as invalid
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-    await (
-      await esm("./src/services/ensureMongoUser.js")
-    ).ensureMongoUserProfile(user);
+    try {
+      await (
+        await esm("./src/services/ensureMongoUser.js")
+      ).ensureMongoUserProfile(user);
+    } catch (e) {
+      // Non-fatal: auth uses SQL; don't block login if Mongo is down
+      console.warn(
+        "[login] ensureMongoUserProfile failed (non-fatal)",
+        e?.message || e
+      );
+    }
 
     const jti = uuidv4();
     const accessToken = signAccessToken(user);

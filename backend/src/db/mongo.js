@@ -24,10 +24,12 @@ async function connectMongo() {
   const dbName = process.env.MONGO_DB || "schedules";
   if (!uri) throw new Error("Missing MONGODB_URI");
 
-  connPromise = mongoose.connect(uri, { dbName }).then((m) => {
-    console.log(`[mongo] connected db=${dbName}`);
-    return m;
-  });
+  connPromise = mongoose
+    .connect(uri, { dbName, serverSelectionTimeoutMS: 5000 })
+    .then((m) => {
+      console.log(`[mongo] connected db=${dbName}`);
+      return m;
+    });
   return connPromise;
 }
 
