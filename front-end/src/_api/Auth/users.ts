@@ -5,7 +5,6 @@ function authHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-// Types you can reuse elsewhere
 export type User = {
   _id: string;
   firstName: string;
@@ -16,7 +15,6 @@ export type User = {
   avatarUrl?: string | null;
 };
 
-// GET /profile/me -> { profile } or { user }; normalize to [user]
 export async function getUsers(): Promise<User[]> {
   const res = await fetch(`${API_BASE}/profile/me`, {
     headers: { ...authHeader() },

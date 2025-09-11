@@ -72,6 +72,14 @@ export function UserAuthForm() {
 
   return (
     <form onSubmit={handleSignup} className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Create an account
+        </h1>
+        <p className="text-muted-foreground text-sm">
+          Enter your email below to create your account
+        </p>
+      </div>
       <div className="flex gap-2">
         <div className="flex-1 space-y-2">
           <Label htmlFor="firstName">First Name</Label>
@@ -145,30 +153,32 @@ export function UserAuthForm() {
           </SelectContent>
         </Select>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          value={form.password}
-          onChange={handleChange}
-        />
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
-        <Input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm your password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-        />
-      </div>
+      <div className="flex gap-2">
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            value={form.password}
+            onChange={handleChange}
+          />
+        </div>
 
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm password"
+            value={form.confirmPassword}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
       {error && <p className="text-sm text-red-500">{error}</p>}
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Signing up…" : "Sign Up"}

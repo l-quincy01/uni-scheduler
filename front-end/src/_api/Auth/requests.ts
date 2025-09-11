@@ -4,8 +4,14 @@ function authHeader() {
   const token = localStorage.getItem("accessToken");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
+/* -----------------------------------------------
 
-// Shapes your CalendarProvider already expects
+
+CHANGES TO BE MADE LATER
+
+
+-----------------------------------------------
+*/
 export type CalendarUser = {
   _id: string;
   firstName: string;
@@ -27,7 +33,6 @@ export type CalendarEvent = {
   user: CalendarUser | null;
 };
 
-// GET /api/calendar/events -> [] (already flattened by your server)
 export async function getEvents(): Promise<CalendarEvent[]> {
   const res = await fetch(`${API_BASE}/api/calendar/events`, {
     headers: { ...authHeader() },
@@ -36,7 +41,6 @@ export async function getEvents(): Promise<CalendarEvent[]> {
   return res.json();
 }
 
-// GET /profile/me -> { profile } or { user }; normalize to [user]
 export async function getUsers(): Promise<CalendarUser[]> {
   const res = await fetch(`${API_BASE}/profile/me`, {
     headers: { ...authHeader() },
