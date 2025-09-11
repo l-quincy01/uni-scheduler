@@ -27,15 +27,12 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 
-// Simple, static imports for side-project ergonomics
-const { connectMongo } = require("./src/db/mongo.js");
-const { ensureMongoUserProfile } = require("./src/services/ensureMongoUser.js");
-const { UserProfile } = require("./src/models/User.js");
-const { Schedule } = require("./src/models/Schedule.js");
-
-connectMongo().catch((err) => {
-  console.error("[mongo] failed to connect:", err);
-});
+const esm = (p) => import(p);
+esm("./src/db/mongo.js")
+  .then((m) => m.connectMongo())
+  .catch((err) => {
+    console.error("[mongo] failed to connect:", err);
+  });
 
 // Helpers
 function signAccessToken(user) {
@@ -48,8 +45,11 @@ function signRefreshToken(user, jti) {
     expiresIn: `${REFRESH_TOKEN_TTL_DAYS}d`,
   });
 }
-const REFRESH_TTL_MS =
-  Number(REFRESH_TOKEN_TTL_DAYS || 7) * 24 * 60 * 60 * 1000;
+function addDays(d, days) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + Number(REFRESH_TOKEN_TTL_DAYS));
+  return x;
+}
 
 // Auth middleware
 async function requireAuth(req, res, next) {
@@ -58,7 +58,7 @@ async function requireAuth(req, res, next) {
   if (!token) return res.status(401).json({ error: "Missing token" });
   try {
     const payload = jwt.verify(token, JWT_ACCESS_SECRET);
-    // Destroy-all semantics: if user has no active refresh tokens, treat as logged out
+
     try {
       const activeCount = await prisma.refreshToken.count({
         where: { userId: Number(payload.sub), revoked: false },
@@ -81,26 +81,45 @@ const { z } = require("zod");
 const RegisterSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(72),
+  firstName: z.string().min(1).max(50),
+  lastName: z.string().min(1).max(50),
+  phone: z.string().regex(/^\+?[0-9]{7,15}$/, "Invalid phone number"),
+  school: z.string().min(1).max(50),
 });
-const LoginSchema = RegisterSchema;
+// const  = RegisterSchema;
+
+const LoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8).max(72),
+});
 
 // Routes --------------------------------------------------------------------------------------------
 app.get("/health", (req, res) => res.json({ ok: true }));
 
-// single CORS middleware above is sufficient
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN?.split(",") ?? "*",
+    credentials: true,
+  })
+);
 
 app.post("/auth/register", async (req, res) => {
   try {
-    const { email, password } = RegisterSchema.parse(req.body);
+    const { email, password, firstName, lastName, phone, school } =
+      RegisterSchema.parse(req.body);
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ error: "Email in use" });
 
     const passwordHash = await argon2.hash(password);
+
     const user = await prisma.user.create({ data: { email, passwordHash } });
-    // ensure Mongo profile exists for this SQL user (best effort)
-    try {
-      await ensureMongoUserProfile(user);
-    } catch {}
+    const profileData = { firstName, lastName, phone, school };
+
+    // ensure Mongo profile exists for this SQL user
+    await (
+      await esm("./src/services/ensureMongoUser.js")
+    ).ensureMongoUserProfile(user, profileData);
 
     const jti = uuidv4();
     const accessToken = signAccessToken(user);
@@ -112,14 +131,20 @@ app.post("/auth/register", async (req, res) => {
         jti,
         tokenHash,
         userId: user.id,
-        expiresAt: new Date(Date.now() + REFRESH_TTL_MS),
+        expiresAt: addDays(new Date(), REFRESH_TOKEN_TTL_DAYS),
         ip: req.ip,
         userAgent: req.headers["user-agent"] || null,
       },
     });
 
     return res.status(201).json({
-      user: { id: user.id, email: user.email },
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+      },
       accessToken,
       refreshToken,
     });
@@ -138,9 +163,9 @@ app.post("/auth/login", async (req, res) => {
     const ok = await argon2.verify(user.passwordHash, password);
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-    try {
-      await ensureMongoUserProfile(user);
-    } catch {}
+    await (
+      await esm("./src/services/ensureMongoUser.js")
+    ).ensureMongoUserProfile(user);
 
     const jti = uuidv4();
     const accessToken = signAccessToken(user);
@@ -152,7 +177,7 @@ app.post("/auth/login", async (req, res) => {
         jti,
         tokenHash,
         userId: user.id,
-        expiresAt: new Date(Date.now() + REFRESH_TTL_MS),
+        expiresAt: addDays(new Date(), REFRESH_TOKEN_TTL_DAYS),
         ip: req.ip,
         userAgent: req.headers["user-agent"] || null,
       },
@@ -245,6 +270,7 @@ app.get("/auth/me", requireAuth, async (req, res) => {
 // GET /profile/me
 app.get("/profile/me", requireAuth, async (req, res) => {
   const sqlUserId = Number(req.user.id);
+  const { UserProfile } = await esm("./src/models/User.js").then((m) => m);
   const profile = await UserProfile.findOne({ sqlUserId }).lean();
   return res.json({ profile });
 });
@@ -253,6 +279,7 @@ app.get("/profile/me", requireAuth, async (req, res) => {
 app.put("/profile/me", requireAuth, async (req, res) => {
   const sqlUserId = Number(req.user.id);
   const { firstName, lastName, phone, school, avatarUrl } = req.body || {};
+  const { UserProfile } = await esm("./src/models/User.js").then((m) => m);
 
   const updated = await UserProfile.findOneAndUpdate(
     { sqlUserId },
@@ -271,6 +298,7 @@ app.post("/api/schedules", requireAuth, async (req, res) => {
     timezone = "Africa/Johannesburg",
     events = [],
   } = req.body || {};
+  const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
 
   const schedule = await Schedule.create({
     sqlUserId,
@@ -284,6 +312,8 @@ app.post("/api/schedules", requireAuth, async (req, res) => {
 // GET /api/calendar/events  (flatten events for your CalendarProvider)
 app.get("/api/calendar/events", requireAuth, async (req, res) => {
   const sqlUserId = Number(req.user.id);
+  const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
+  const { UserProfile } = await esm("./src/models/User.js").then((m) => m);
 
   const [schedules, profile] = await Promise.all([
     Schedule.find({ sqlUserId }).lean(),

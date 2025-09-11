@@ -2,7 +2,7 @@ import os
 import httpx
 from flask import Flask, Blueprint, request, jsonify
 from dotenv import load_dotenv
-
+from flask_cors import CORS
 
 from scrapper.parse import parse_exam_table
 from scrapper.persist import upsert_modules
@@ -120,7 +120,7 @@ def create_app() -> Flask:
 
 
 app = create_app()
-
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 if __name__ == "__main__":
 
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=True)
