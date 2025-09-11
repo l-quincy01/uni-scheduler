@@ -170,7 +170,6 @@ app.post("/auth/login", async (req, res) => {
     try {
       ok = await argon2.verify(user.passwordHash, password);
     } catch {
-      // If hash format is invalid or verify fails unexpectedly, treat as invalid
       return res.status(401).json({ error: "Invalid credentials" });
     }
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
@@ -180,7 +179,6 @@ app.post("/auth/login", async (req, res) => {
         await esm("./src/services/ensureMongoUser.js")
       ).ensureMongoUserProfile(user);
     } catch (e) {
-      // Non-fatal: auth uses SQL; don't block login if Mongo is down
       console.warn(
         "[login] ensureMongoUserProfile failed (non-fatal)",
         e?.message || e
@@ -238,7 +236,7 @@ app.post("/auth/refresh", async (req, res) => {
     if (!user) return res.status(401).json({ error: "Unknown user" });
 
     const accessToken = signAccessToken(user);
-    // (Optional) rotate refresh token here for stronger security
+
     return res.json({ accessToken });
   } catch {
     return res.status(401).json({ error: "Invalid/expired token" });
@@ -256,19 +254,16 @@ app.post("/auth/logout", async (req, res) => {
     if (!payload?.jti)
       return res.status(400).json({ error: "Invalid token payload" });
 
-    // Look up token record to get userId (idempotent if missing)
     const dbToken = await prisma.refreshToken.findUnique({
       where: { jti: payload.jti },
     });
     if (!dbToken) return res.json({ ok: true });
 
-    // Ensure presented token matches stored hash (ignore if rotated)
     const matches = await argon2
       .verify(dbToken.tokenHash, refreshToken)
       .catch(() => false);
     if (!matches) return res.json({ ok: true });
 
-    // Destroy all refresh tokens for this user (logout everywhere)
     await prisma.refreshToken.deleteMany({
       where: { userId: dbToken.userId },
     });
@@ -329,7 +324,7 @@ app.post("/api/schedules", requireAuth, async (req, res) => {
   return res.status(201).json({ scheduleId: schedule._id.toString() });
 });
 
-// GET /api/calendar/events  (flatten events for your CalendarProvider)
+// GET /api/calendar/events
 app.get("/api/calendar/events", requireAuth, async (req, res) => {
   const sqlUserId = Number(req.user.id);
   const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
