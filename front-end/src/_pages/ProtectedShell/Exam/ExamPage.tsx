@@ -1,56 +1,66 @@
 import Kanban from "@/components/Dashboard/Kanban/Kanban";
-import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ContentGrid from "@/components/Exam/ContentGrid";
+import { scheduleToKanbanData } from "@/utils/scheduleToKanban";
+import { getModuleSchedule } from "@/_api/Auth/requests";
+import { useEffect, useMemo, useState } from "react";
+import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
+import { useParams } from "react-router";
 
 export default function ExamPage() {
+  const [schedules, setSchedules] = useState<IScheduleInput[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const { id } = useParams<{ id: string }>();
+  const safeId = id ?? "";
+
+  useEffect(() => {
+    if (!safeId) return;
+
+    //force remount when id changes
+    let ignore = false;
+    const ac = new AbortController();
+
+    //  id change trigger a fresh load state
+    setLoading(true);
+    setSchedules(null);
+
+    (async () => {
+      try {
+        const s = await getModuleSchedule(safeId, { signal: ac.signal } as any);
+        if (!ignore) setSchedules(s ?? []);
+      } catch {
+        if (!ignore) setSchedules([]);
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+      ac.abort();
+    };
+  }, [safeId]);
+
+  const boards = useMemo(
+    () => scheduleToKanbanData({ schedules: schedules ?? [] }),
+    [schedules]
+  );
+
   return (
     <div>
-      {/* <Tabs defaultValue="Schedule" className="w-[400px]">
-        <TabsList>
-          <TabsTrigger value="Schedule">Schedule</TabsTrigger>
-          <TabsTrigger value="Exams">Exams Content</TabsTrigger>
-        </TabsList>
-        <TabsContent value="Schedule">
-          <Kanban boards={KanbanData} />
-        </TabsContent>
-        <TabsContent value="Exams">
-          <ContentGrid items={contentGridData.assessmentContent} />
-        </TabsContent>
-      </Tabs> */}
-      <Kanban boards={KanbanData} />
+      {loading ? (
+        <div className="flex justify-center py-8 text-muted-foreground">
+          Loading schedule…
+        </div>
+      ) : boards.length > 0 ? (
+        <Kanban key={safeId} boards={boards} />
+      ) : (
+        <div className="flex flex-col items-center">
+          <span className="text-xl font-semibold">No Schedule Found.</span>
+          <span className="text-md text-muted-foreground">
+            Please create a schedule first.
+          </span>
+        </div>
+      )}
     </div>
   );
 }
-
-const KanbanData = [
-  {
-    data: [
-      {
-        id: "001",
-        title: "History",
-        colorDot: "bg-purple-600",
-        items: [
-          {
-            id: 101,
-            title: "Exam: World War II & Aftermath",
-            type: "Exam",
-            date: "2025-11-10",
-          },
-        ],
-      },
-    ],
-  },
-];
-
-const contentGridData = {
-  assessmentContent: [
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-  ],
-};

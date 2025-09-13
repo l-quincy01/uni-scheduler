@@ -17,6 +17,7 @@ const ScheduleSchema = new mongoose.Schema(
     title: { type: String, required: true },
     timezone: { type: String, default: "Africa/Johannesburg" },
     events: { type: [EventSubSchema], default: [] },
+    exams: { type: [EventSubSchema], default: [] },
   },
   { timestamps: true, collection: "schedules" }
 );

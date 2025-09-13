@@ -7,11 +7,11 @@ const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const { v4: uuidv4 } = require("uuid");
 const { PrismaClient } = require("@prisma/client");
-// const { requireAuth } = { requireAuth };
+const { OpenAI } = require("openai");
 
 const prisma = new PrismaClient();
 const app = express();
-
+const openai = new OpenAI({});
 const {
   PORT = 4000,
   CORS_ORIGIN = "*",
@@ -66,7 +66,6 @@ async function requireAuth(req, res, next) {
       if (activeCount === 0)
         return res.status(401).json({ error: "Logged out" });
     } catch (e) {
-      // If DB check fails, be safe and deny
       return res.status(401).json({ error: "Auth check failed" });
     }
     req.user = { id: payload.sub, email: payload.email };
@@ -86,7 +85,6 @@ const RegisterSchema = z.object({
   phone: z.string().regex(/^\+?[0-9]{7,15}$/, "Invalid phone number"),
   school: z.string().min(1).max(50),
 });
-// const  = RegisterSchema;
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -94,6 +92,164 @@ const LoginSchema = z.object({
 });
 
 // Routes --------------------------------------------------------------------------------------------
+
+app.post("/api/generate-schedule", requireAuth, async (req, res) => {
+  try {
+    const sqlUserId = Number(req.user.id);
+    const { scheduleTitle, selectedModules } = req.body;
+    if (!scheduleTitle || !Array.isArray(selectedModules)) {
+      return res.status(400).json({ error: "Missing input data" });
+    }
+
+    // Schema for structured output
+    const scheduleSchema = {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        schedules: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              title: { type: "string" },
+              timezone: { type: "string", enum: ["Africa/Johannesburg"] },
+              events: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    color: {
+                      type: "string",
+                      enum: [
+                        "blue",
+                        "green",
+                        "red",
+                        "yellow",
+                        "purple",
+                        "orange",
+                      ],
+                    },
+                    startDate: { type: "string" },
+                    endDate: { type: "string" },
+                  },
+                  required: [
+                    "title",
+                    "description",
+                    "color",
+                    "startDate",
+                    "endDate",
+                  ],
+                },
+              },
+              exams: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    color: {
+                      type: "string",
+                      enum: [
+                        "blue",
+                        "green",
+                        "red",
+                        "yellow",
+                        "purple",
+                        "orange",
+                      ],
+                    },
+                    startDate: { type: "string" },
+                    endDate: { type: "string" },
+                  },
+                  required: [
+                    "title",
+                    "description",
+                    "color",
+                    "startDate",
+                    "endDate",
+                  ],
+                },
+              },
+            },
+            required: ["title", "timezone", "events", "exams"],
+          },
+        },
+      },
+      required: ["schedules"],
+    };
+
+    // GPT call (structured JSON output)
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `LLM Prompt: Exam Study Schedule Generator. You are an intelligent scheduling assistant that creates exam study schedules for students.
+            1.Rules for generating study events (events): - Each module must have at least 2 and at most 5 study sessions. - Spread study sessions evenly between today’s date and2 days before the exam date. - Study sessions must not overlap in time, but can occur on the same day. - Use reasonable 2-hour blocks (e.g., 09:00–11:00, 14:00–16:00). - Assign each module a unique color from the allowed set. - Construct the title as follows: "Study:" Module Title "(Session N)" 
+            2.Rules for exams (exams): - Include all exams from selectedModules. - Use the exact date and time provided in the input, converted into ISO 8601 format with timezone (+02:00). - Color must match the study events for that module. - For exams always keep the description as "Exam"
+            `,
+        },
+        {
+          role: "user",
+          content: `Input:\n${JSON.stringify({
+            scheduleTitle,
+            selectedModules,
+          })}`,
+        },
+      ],
+      temperature: 0,
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "study_schedule_schema",
+          schema: scheduleSchema,
+          strict: true,
+        },
+      },
+    });
+
+    let generated;
+    try {
+      const raw = completion?.choices?.[0]?.message?.content || "{}";
+      generated = JSON.parse(raw);
+    } catch (e) {
+      throw new Error("Model returned invalid JSON");
+    }
+    const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
+
+    // Save each schedule into Mongo
+    const savedSchedules = await Promise.all(
+      generated.schedules.map((s) =>
+        Schedule.create({
+          sqlUserId,
+          title: scheduleTitle,
+          timezone: s.timezone,
+          events: s.events,
+          exams: s.exams,
+        })
+      )
+    );
+
+    return res.status(201).json({
+      message: "Schedule generated and saved",
+      schedules: savedSchedules.map((s) => ({
+        id: s._id.toString(),
+        title: s.title,
+        timezone: s.timezone,
+      })),
+    });
+  } catch (err) {
+    console.error("[/api/generate-schedule] failed:", err);
+    return res.status(500).json({ error: "Failed to generate schedule" });
+  }
+});
+
 app.get("/health", (req, res) => res.json({ ok: true }));
 
 app.use(
@@ -116,16 +272,14 @@ app.post("/auth/register", async (req, res) => {
     const user = await prisma.user.create({ data: { email, passwordHash } });
     const profileData = { firstName, lastName, phone, school };
 
-    try {
-      await (
-        await esm("./src/services/ensureMongoUser.js")
-      ).ensureMongoUserProfile(user, profileData);
-    } catch (e) {
-      console.warn(
-        "[register] ensureMongoUserProfile failed (non-fatal)",
-        e?.message || e
+    esm("./src/services/ensureMongoUser.js")
+      .then((m) => m.ensureMongoUserProfile(user, profileData))
+      .catch((e) =>
+        console.warn(
+          "[register] ensureMongoUserProfile failed (non-fatal)",
+          e?.message || e
+        )
       );
-    }
 
     const jti = uuidv4();
     const accessToken = signAccessToken(user);
@@ -156,6 +310,7 @@ app.post("/auth/register", async (req, res) => {
     });
   } catch (e) {
     if (e?.issues) return res.status(400).json({ error: e.issues });
+    console.error("[/auth/register] failed:", e?.message || e);
     return res.status(500).json({ error: "Server error" });
   }
 });
@@ -174,16 +329,14 @@ app.post("/auth/login", async (req, res) => {
     }
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-    try {
-      await (
-        await esm("./src/services/ensureMongoUser.js")
-      ).ensureMongoUserProfile(user);
-    } catch (e) {
-      console.warn(
-        "[login] ensureMongoUserProfile failed (non-fatal)",
-        e?.message || e
+    esm("./src/services/ensureMongoUser.js")
+      .then((m) => m.ensureMongoUserProfile(user))
+      .catch((e) =>
+        console.warn(
+          "[login] ensureMongoUserProfile failed (non-fatal)",
+          e?.message || e
+        )
       );
-    }
 
     const jti = uuidv4();
     const accessToken = signAccessToken(user);
@@ -208,6 +361,7 @@ app.post("/auth/login", async (req, res) => {
     });
   } catch (e) {
     if (e?.issues) return res.status(400).json({ error: e.issues });
+    console.error("[/auth/login] failed:", e?.message || e);
     return res.status(500).json({ error: "Server error" });
   }
 });
@@ -270,16 +424,21 @@ app.post("/auth/logout", async (req, res) => {
 
     return res.json({ ok: true });
   } catch (e) {
-    // If token is already expired/invalid, still clear client state
     return res.status(401).json({ error: "Invalid/expired token" });
   }
 });
-app.get("/auth/me", async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: { id: Number(req.user.id) },
-    select: { id: true, email: true, createdAt: true },
-  });
-  return res.json({ user });
+
+app.get("/auth/me", requireAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: Number(req.user.id) },
+      select: { id: true, email: true, createdAt: true },
+    });
+    return res.json({ user });
+  } catch (e) {
+    console.error("[/auth/me] failed:", e?.message || e);
+    return res.status(500).json({ error: "Server error" });
+  }
 });
 
 // GET /profile/me
@@ -312,6 +471,7 @@ app.post("/api/schedules", requireAuth, async (req, res) => {
     title,
     timezone = "Africa/Johannesburg",
     events = [],
+    exams = [],
   } = req.body || {};
   const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
 
@@ -320,8 +480,80 @@ app.post("/api/schedules", requireAuth, async (req, res) => {
     title,
     timezone,
     events,
+    exams,
   });
   return res.status(201).json({ scheduleId: schedule._id.toString() });
+});
+
+// GET /api/schedules
+app.get("/api/schedules", requireAuth, async (req, res) => {
+  try {
+    const sqlUserId = Number(req.user.id);
+    const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
+    const docs = await Schedule.find({ sqlUserId }).lean();
+
+    const schedules = docs.map((s) => ({
+      id: s._id.toString(),
+      title: s.title,
+      timezone: s.timezone || "Africa/Johannesburg",
+      events: (s.events || []).map((e) => ({
+        title: e.title,
+        description: e.description || "",
+        color: e.color,
+        startDate: new Date(e.startDate).toISOString(),
+        endDate: new Date(e.endDate).toISOString(),
+      })),
+      exams: (s.exams || []).map((e) => ({
+        title: e.title,
+        description: e.description || "",
+        color: e.color,
+        startDate: new Date(e.startDate).toISOString(),
+        endDate: new Date(e.endDate).toISOString(),
+      })),
+    }));
+
+    return res.json({ schedules });
+  } catch (e) {
+    console.error("[/api/schedules] failed:", e?.message || e);
+    return res.status(500).json({ error: "Failed to fetch schedules" });
+  }
+});
+
+// GET /api/schedules/:id -> { schedule }
+app.get("/api/schedules/:id", requireAuth, async (req, res) => {
+  try {
+    const sqlUserId = Number(req.user.id);
+    const { id } = req.params;
+    const { Schedule } = await esm("./src/models/Schedule.js").then((m) => m);
+
+    const s = await Schedule.findOne({ _id: id, sqlUserId }).lean();
+    if (!s) return res.status(404).json({ error: "Schedule not found" });
+
+    const schedule = {
+      id: s._id.toString(),
+      title: s.title,
+      timezone: s.timezone || "Africa/Johannesburg",
+      events: (s.events || []).map((e) => ({
+        title: e.title,
+        description: e.description || "",
+        color: e.color,
+        startDate: new Date(e.startDate).toISOString(),
+        endDate: new Date(e.endDate).toISOString(),
+      })),
+      exams: (s.exams || []).map((e) => ({
+        title: e.title,
+        description: e.description || "",
+        color: e.color,
+        startDate: new Date(e.startDate).toISOString(),
+        endDate: new Date(e.endDate).toISOString(),
+      })),
+    };
+
+    return res.json({ schedule });
+  } catch (e) {
+    console.error("[/api/schedules/:id] failed:", e?.message || e);
+    return res.status(500).json({ error: "Failed to fetch schedule" });
+  }
 });
 
 // GET /api/calendar/events
@@ -335,15 +567,15 @@ app.get("/api/calendar/events", requireAuth, async (req, res) => {
     UserProfile.findOne({ sqlUserId }).lean(),
   ]);
 
-  const events = schedules.flatMap((s) =>
-    (s.events || []).map((e) => ({
+  const events = schedules.flatMap((s) => {
+    const mapItem = (e) => ({
       id: e._id.toString(),
       scheduleId: s._id.toString(),
       title: e.title,
       description: e.description,
       color: e.color,
-      startDate: e.startDate.toISOString(),
-      endDate: e.endDate.toISOString(),
+      startDate: new Date(e.startDate).toISOString(),
+      endDate: new Date(e.endDate).toISOString(),
       user: profile
         ? {
             _id: profile._id.toString(),
@@ -353,8 +585,12 @@ app.get("/api/calendar/events", requireAuth, async (req, res) => {
             avatarUrl: profile.avatarUrl,
           }
         : null,
-    }))
-  );
+    });
+    return [
+      ...(Array.isArray(s.events) ? s.events.map(mapItem) : []),
+      ...(Array.isArray(s.exams) ? s.exams.map(mapItem) : []),
+    ];
+  });
 
   res.json(events);
 });

@@ -29,22 +29,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const res = await fetch(
             `${import.meta.env.VITE_AUTH_API_BASE}/auth/me`,
-            {
-              headers: { Authorization: `Bearer ${accessToken}` },
-            }
+            { headers: { Authorization: `Bearer ${accessToken}` } }
           );
           if (res.ok) {
             const data = await res.json();
             setUser(data.user);
             localStorage.setItem("auth_user", JSON.stringify(data.user));
           } else if (refreshToken) {
-            const { accessToken: newAT } = await refreshAccessToken(
-              refreshToken
-            );
-            localStorage.setItem("accessToken", newAT);
+            try {
+              const { accessToken: newAT } = await refreshAccessToken(
+                refreshToken
+              );
+              localStorage.setItem("accessToken", newAT);
+            } catch {
+              localStorage.removeItem("auth_user");
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              setUser(null);
+            }
+          } else {
+            localStorage.removeItem("auth_user");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            setUser(null);
           }
         } catch {
-          // fallback to no user
+          // On unexpected failure, clear tokens to avoid loops
+          localStorage.removeItem("auth_user");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          setUser(null);
         }
       } else if (savedUser) {
         setUser(JSON.parse(savedUser));

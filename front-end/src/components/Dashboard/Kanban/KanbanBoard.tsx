@@ -81,9 +81,8 @@ export interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ columns }: KanbanBoardProps) {
-  const { pathname } = useLocation();
   return (
-    <div className="flex flex-row gap-6 overflow-x-auto">
+    <div className="flex flex-row gap-6 overflow-x-auto ">
       {columns.map((column, index) => (
         <KanbanColumn
           key={index}
@@ -98,7 +97,9 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
               className="bg-neutral-50 dark:bg-neutral-900 w-full rounded-xl p-2 border border-neutral-200 dark:border-neutral-800"
             >
               <div className="flex items-start justify-between">
-                <h4 className="text-md font-semibold">{item.title}</h4>
+                <h4 className="text-xs font-semibold line-clamp-2">
+                  {item.title}
+                </h4>
 
                 {item.type && (
                   <Badge
@@ -170,19 +171,6 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                     )}
                   </div>
                 )} */}
-
-                {pathname === "/" ? (
-                  <></>
-                ) : (
-                  <Link to={"content"}>
-                    <Button
-                      variant="outline"
-                      className="w-fit h-fit py-1 px-1 cursor-pointer"
-                    >
-                      Practice
-                    </Button>
-                  </Link>
-                )}
               </div>
             </li>
           ))}

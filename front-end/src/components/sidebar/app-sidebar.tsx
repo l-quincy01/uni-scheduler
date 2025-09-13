@@ -34,15 +34,20 @@ import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 import { Link } from "react-router";
 import { NavMain } from "./nav-main";
+import type { User } from "@/_api/Auth/users";
+import { getUsers } from "@/_api/Auth/users";
+import { getNavSchedules } from "@/_api/Auth/requests";
+
+interface navSchedule {
+  id: string;
+  title: string;
+  url: "/exam";
+  isActive: boolean;
+}
 
 // This is sample data.
 const data = {
-  user: {
-    name: "Tebza",
-    email: "tebza@example.com",
-    avatar:
-      "https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fkfonn294tw4c1.jpg",
-  },
+  // user is now loaded dynamically
 
   navMain: [
     {
@@ -62,13 +67,47 @@ const data = {
       id: "651f3c2e9a7b4c1234567890",
       title: "Final year exams",
       url: "/exam",
-
       isActive: true,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = React.useState<User | null>(null);
+  const [navSchedules, setNavSchedules] = React.useState<navSchedule[]>([]);
+
+  React.useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const u = await getUsers();
+        const s = await getNavSchedules();
+
+        if (mounted) {
+          setUser(u[0] ?? null);
+          setNavSchedules(s);
+        }
+      } catch (e) {
+        if (mounted) setUser(null);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const user_data = {
+    name: user
+      ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() || "User"
+      : "User",
+    email: user?.email ?? "",
+    avatar: user?.avatarUrl ?? "",
+  };
+
+
+  // navSchedules is derived from API; if empty, no schedules will render
+
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -85,10 +124,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSchedule items={data.navSchedule} />
+        <NavSchedule items={navSchedules} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user_data} />
       </SidebarFooter>
     </Sidebar>
   );

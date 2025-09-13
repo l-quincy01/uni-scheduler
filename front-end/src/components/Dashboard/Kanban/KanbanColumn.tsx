@@ -48,7 +48,7 @@ export function KanbanColumn({
   const { pathname } = useLocation();
   return (
     <div
-      className="flex flex-col rounded-xl w-fit bg-accent border border-neutral-200 dark:border-neutral-800 shadow-sm"
+      className="flex flex-col rounded-xl  bg-accent border border-neutral-200 dark:border-neutral-800 shadow-sm min-w-[15rem] max-w-[15rem] "
       role="region"
       aria-labelledby={id}
     >
@@ -60,7 +60,9 @@ export function KanbanColumn({
           className={`inline-block rounded-full ${colorDot} w-2 h-2`}
           aria-hidden="true"
         />
-        <h3 className="text-base font-semibold tracking-tight">{title}</h3>
+        <h3 className="text-sm font-semibold tracking-tight line-clamp-1">
+          {title}
+        </h3>
         {typeof count === "number" && (
           <span className="ml-auto text-xs text-neutral-500 dark:text-neutral-400">
             {count} item{count !== 1 && "s"}

@@ -7,7 +7,7 @@ import CalendarPage from "@/_pages/ProtectedShell/Calendar/CalendarPage";
 import ProfilePage from "@/_pages/ProtectedShell/Profile/ProfilePage";
 import ExamPage from "@/_pages/ProtectedShell/Exam/ExamPage";
 import ExamAgenda from "@/_pages/ProtectedShell/Exam/agenda/ExamAgenda";
-import ExamContent from "@/components/Exam/ExamContent/ExamContentPanel";
+import ExamContent from "@/components/Exam/ExamContent/ExamContent";
 import Index from "@/_pages/ProtectedShell/Exam/Index";
 import ExamContentView from "@/_pages/ProtectedShell/Exam/content/ExamContentView";
 import { GuestOnly, RequireAuth } from "./Auth/RouteGuard";

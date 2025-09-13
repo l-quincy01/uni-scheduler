@@ -50,14 +50,28 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
     setSelectedModules(selectedModules.filter((exam) => exam.title !== title));
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     setShowValidation(true);
 
     if (scheduleTitle.trim().length >= 3 && selectedModules.length > 0) {
-      console.log({
-        scheduleTitle,
-        selectedModules,
-      });
+      try {
+        const res = await fetch("http://localhost:4000/api/generate-schedule", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, //for verifying jwt authorisation
+          },
+          body: JSON.stringify({
+            scheduleTitle,
+            selectedModules,
+          }),
+        });
+
+        const data = await res.json();
+        console.log("Saved Schedule:", data);
+      } catch (e) {
+        console.error("Failed to generate schedule", e);
+      }
     }
   };
 

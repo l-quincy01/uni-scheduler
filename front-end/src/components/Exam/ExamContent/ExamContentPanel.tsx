@@ -1,42 +1,20 @@
-import ContentGrid from "@/components/Exam/ContentGrid";
-import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { Suspense, useState } from "react";
-import pdfIcon from "assets/Icons/ContentPanel/pdf_icon.png";
-import { Tabs } from "@/components/ui/vercel-tabs";
 import { useContentPanel } from "@/_app/Context/ContentPanelContext";
-import { useCourseCalendar } from "@/_app/Context/CourseCalendarContext";
-import { CalendarSkeleton } from "@/components/Calendar/modules/components/calendar/skeletons/calendar-skeleton";
-import { Calendar } from "@/components/Calendar/modules/components/calendar/calendar";
+import React, { useState } from "react";
+import { Tabs } from "@/components/ui/vercel-tabs";
+import pdfIcon from "assets/Icons/ContentPanel/pdf_icon.png";
 
-export default function ExamContent() {
+export default function ExamContentPanel() {
   const { isContentPanelOpen } = useContentPanel();
-
   const [activeTab, setActiveTab] = useState("scope");
-
-  const { isCourseCalendarOpen } = useCourseCalendar();
 
   const tabs = [
     { id: "scope", label: "Scope" },
     { id: "past", label: "Past Papers" },
   ];
-
   return (
-    <div className="flex flex-row gap-4 ">
-      <div className="py-2">
-        {" "}
-        {isCourseCalendarOpen ? (
-          <Suspense fallback={<CalendarSkeleton />}>
-            <Calendar />
-          </Suspense>
-        ) : (
-          <ContentGrid
-            variant="Thumbnail"
-            items={contentGridData.practiceExams}
-          />
-        )}
-      </div>
+    <>
       {isContentPanelOpen && (
-        <div className="border  rounded-lg px-4 py-3 w-md flex flex-col gap-4">
+        <div className="border  rounded-lg px-4 py-3 w-md flex flex-col gap-4 ml-2">
           <Tabs tabs={tabs} onTabChange={(tabId) => setActiveTab(tabId)} />
 
           {activeTab === "scope" && (
@@ -77,83 +55,6 @@ export default function ExamContent() {
           )}
         </div>
       )}
-    </div>
+    </>
   );
 }
-
-const contentGridData = {
-  practiceExams: [
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-    {
-      id: "a4",
-      title: "Limits and series of functions",
-      url: "history101",
-      description: "Intro to study of limits and series of functions",
-      date: "Date: 28 Apr 2025",
-      author: "Quincy",
-    },
-  ],
-};
