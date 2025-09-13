@@ -1,5 +1,5 @@
 import React from "react";
-import MarkdownViewer from "@/components/MarkdownViewer/MarkdownViewer";
+import MarkdownViewer from "@/components/Exam/ExamView/components/MarkdownViewer/MarkdownViewer";
 import { Textarea } from "@/components/ui/textarea";
 
 interface QuestionData {

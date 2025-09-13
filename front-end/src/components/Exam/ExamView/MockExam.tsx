@@ -85,22 +85,3 @@ export default function MockExam({ questions }: MockExamProps) {
     </div>
   );
 }
-
-/*
-
- toast("Event has been created", {
-          description: "PDF Export failed.",
-    
-        })
-
- toast("Event has been created", {
-          description: "Exporting to PDF",
-    
-        })
- toast("Event has been created", {
-          description: "Successfully Downloaded",
-    
-        })
-
-
-*/

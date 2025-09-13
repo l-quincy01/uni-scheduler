@@ -81,9 +81,8 @@ export interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ columns }: KanbanBoardProps) {
-  const { pathname } = useLocation();
   return (
-    <div className="flex flex-row gap-6 overflow-x-auto">
+    <div className="flex flex-row gap-6 overflow-x-auto ">
       {columns.map((column, index) => (
         <KanbanColumn
           key={index}
@@ -98,7 +97,9 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
               className="bg-neutral-50 dark:bg-neutral-900 w-full rounded-xl p-2 border border-neutral-200 dark:border-neutral-800"
             >
               <div className="flex items-start justify-between">
-                <h4 className="text-md font-semibold">{item.title}</h4>
+                <h4 className="text-xs font-semibold line-clamp-2">
+                  {item.title}
+                </h4>
 
                 {item.type && (
                   <Badge
@@ -134,15 +135,15 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                 </Collapsible>
               </div> */}
 
-              <div className="text-xs flex flex-row items-center gap-2">
-                Practice Exams Created: <span>3</span>
-              </div>
+              {/* <div className="text-xs flex flex-row items-center gap-2">
+                Preparation for MAM 202 P2 - Linear Algebra
+              </div> */}
 
               <Tooltip>
                 <TooltipTrigger className="flex flex-row  text-xs  items-center gap-2 p-0">
-                  Next Practice Date:{" "}
+                  Date:{" "}
                   <span className="flex flex-row items-center hover:underline cursor-alias gap-1">
-                    30/09/2025
+                    {item.date}
                     <SquareArrowOutUpRight size={14} />
                   </span>{" "}
                 </TooltipTrigger>
@@ -152,7 +153,7 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
               </Tooltip>
 
               <div className="flex flex-row justify-between items-center mt-2">
-                {(item.date || item.priority) && (
+                {/* {(item.date || item.priority) && (
                   <div className="mt-2 flex items-center gap-2 text-sm font-semibold">
                     {item.date && (
                       <span className="flex items-center py-0.5">
@@ -169,20 +170,7 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                       </span>
                     )}
                   </div>
-                )}
-
-                {pathname === "/" ? (
-                  <></>
-                ) : (
-                  <Link to={"content"}>
-                    <Button
-                      variant="outline"
-                      className="w-fit h-fit py-1 px-1 cursor-pointer"
-                    >
-                      Practice
-                    </Button>
-                  </Link>
-                )}
+                )} */}
               </div>
             </li>
           ))}

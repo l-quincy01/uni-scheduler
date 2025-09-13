@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useContentPanel } from "@/_app/Context/ContentPanelContext";
+import Logout from "../authentication/logout";
 
 export default function SiteHeader() {
   const { isContentPanelOpen, toggleContentPanel, setIsContentPanelOpen } =
@@ -39,7 +40,7 @@ export default function SiteHeader() {
   }
 
   const pathnameBase = getLocationBase(pathname);
-
+  console.log(pathnameBase);
   function renderHeaderTitle() {
     switch (pathnameBase) {
       case "exam":
@@ -89,6 +90,7 @@ export default function SiteHeader() {
         />
         <div className="ml-auto flex items-center gap-2">
           <ModeToggle />
+          <Logout />
         </div>
       </div>
     </header>

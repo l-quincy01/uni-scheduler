@@ -2,14 +2,14 @@
 import { Route, Routes } from "react-router";
 import { ThemeProvider } from "./providers/theme/theme-provider";
 
-import DashboardPage from "@/_pages/Dashboard/DashboardPage";
-import CalendarPage from "@/_pages/Calendar/CalendarPage";
-import ProfilePage from "@/_pages/Profile/ProfilePage";
-import ExamPage from "@/_pages/Exam/ExamPage";
-import ExamAgenda from "@/_pages/Exam/agenda/ExamAgenda";
-import ExamContent from "@/_pages/Exam/content/ExamContent";
-import Index from "@/_pages/Exam/Index";
-import ExamContentView from "@/_pages/Exam/content/ExamContentView";
+import DashboardPage from "@/_pages/ProtectedShell/Dashboard/DashboardPage";
+import CalendarPage from "@/_pages/ProtectedShell/Calendar/CalendarPage";
+import ProfilePage from "@/_pages/ProtectedShell/Profile/ProfilePage";
+import ExamPage from "@/_pages/ProtectedShell/Exam/ExamPage";
+import ExamAgenda from "@/_pages/ProtectedShell/Exam/agenda/ExamAgenda";
+import ExamContent from "@/components/Exam/ExamContent/ExamContent";
+import Index from "@/_pages/ProtectedShell/Exam/Index";
+import ExamContentView from "@/_pages/ProtectedShell/Exam/content/ExamContentView";
 import { GuestOnly, RequireAuth } from "./Auth/RouteGuard";
 import ProtectedAppShell from "./Auth/ProtectedShell";
 import { AuthProvider } from "./Auth/AuthContext";

@@ -97,7 +97,7 @@ export default function ContentGrid({
 
       case "Thumbnail":
         return items.map((item, index) => (
-          <Link to={item.url}>
+          <Link to={item.id}>
             <div
               key={index}
               onClick={() => onCardClick?.(item)}

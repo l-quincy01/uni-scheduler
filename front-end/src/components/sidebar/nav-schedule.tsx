@@ -29,7 +29,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import AddSchedule from "../Modals/AddSchedule";
+import AddSchedule from "../Modals/ExamSchedule/AddSchedule";
+import AddScheduleLoader from "../Modals/ExamSchedule/AddScheduleLoader";
 
 export function NavSchedule({
   items,
@@ -51,9 +52,6 @@ export function NavSchedule({
       <SidebarGroupLabel>
         <div className="flex flex-row justify-between items-center w-full">
           Schedules
-          {/* <div className="rounded-full p-1 border cursor-pointer hover:bg-accent">
-            <Plus size={12} />
-          </div> */}
           <Dialog>
             <DialogTrigger>
               <div className="rounded-full p-1 border cursor-pointer hover:bg-accent">
@@ -61,10 +59,7 @@ export function NavSchedule({
               </div>
             </DialogTrigger>
             <DialogContent className="scale-90">
-              <AddSchedule
-                heading="Select Your Exam Modules"
-                modules={dummyModules}
-              />
+              <AddScheduleLoader />
             </DialogContent>
           </Dialog>
         </div>{" "}
@@ -74,7 +69,6 @@ export function NavSchedule({
           <Link to={`${item.url}/${item.id}`}>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={item.title}>
-                {/* {item.icon && <item.icon />} */}
                 <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -3,21 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import React from "react";
 import { Outlet, useLocation } from "react-router";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import AddSchedule from "@/components/Modals/AddSchedule";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
+import AddScheduleLoader from "@/components/Modals/ExamSchedule/AddScheduleLoader";
 
 export default function Layout() {
   const { pathname } = useLocation();
-  console.log(pathname);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -35,10 +26,8 @@ export default function Layout() {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="scale-90">
-                    <AddSchedule
-                      heading="Select Your Exam Modules"
-                      modules={dummyModules}
-                    />
+                    {/*Modules are auto populated from the data scrapped */}
+                    <AddScheduleLoader />
                   </DialogContent>
                 </Dialog>
               </div>
@@ -52,47 +41,3 @@ export default function Layout() {
     </div>
   );
 }
-
-const dummyModules = [
-  {
-    category: "Psychology",
-    exams: [
-      {
-        title: "Masters in Counselling Psychology Paper 1: Assessment",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title:
-          "Organisational Psychology Honours - Occupational Health & Wellbeing",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title: "Psychology 202 Paper 2",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-    ],
-  },
-  {
-    category: "Math",
-    exams: [
-      {
-        title: "Mat314",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title: "Mat301",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title: "Mat202",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-    ],
-  },
-];

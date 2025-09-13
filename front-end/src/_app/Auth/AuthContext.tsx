@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { loginUser, logoutUser, refreshAccessToken } from "@/_api/Auth/auth";
 
-type User = { id: string; email: string } | null;
+type User = { id: number; email: string } | null;
 
 type AuthContextType = {
   user: User;
@@ -17,21 +18,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
 
+  // Boot: load from storage, optionally refresh access
   useEffect(() => {
-    const raw = localStorage.getItem("auth_user");
-    if (raw) setUser(JSON.parse(raw));
-    setLoading(false);
+    const savedUser = localStorage.getItem("auth_user");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const accessToken = localStorage.getItem("accessToken");
+
+    async function init() {
+      if (accessToken) {
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_AUTH_API_BASE}/auth/me`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data.user);
+            localStorage.setItem("auth_user", JSON.stringify(data.user));
+          } else if (refreshToken) {
+            try {
+              const { accessToken: newAT } = await refreshAccessToken(
+                refreshToken
+              );
+              localStorage.setItem("accessToken", newAT);
+            } catch {
+              localStorage.removeItem("auth_user");
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              setUser(null);
+            }
+          } else {
+            localStorage.removeItem("auth_user");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            setUser(null);
+          }
+        } catch {
+          // On unexpected failure, clear tokens to avoid loops
+          localStorage.removeItem("auth_user");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          setUser(null);
+        }
+      } else if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+      setLoading(false);
+    }
+
+    init();
   }, []);
 
-  const signIn = async (email: string, _password: string) => {
-    // TODO: call your backend; set token, etc.
-    const fakeUser = { id: "u1", email };
-    localStorage.setItem("auth_user", JSON.stringify(fakeUser));
-    setUser(fakeUser);
+  const signIn = async (email: string, password: string) => {
+    const res = await loginUser({ email, password });
+    localStorage.setItem("auth_user", JSON.stringify(res.user));
+    localStorage.setItem("accessToken", res.accessToken);
+    localStorage.setItem("refreshToken", res.refreshToken);
+    setUser(res.user);
   };
 
   const signOut = async () => {
+    const rt = localStorage.getItem("refreshToken") || "";
+    await logoutUser(rt, true); // revoke all refresh tokens (logout everywhere)
     localStorage.removeItem("auth_user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     setUser(null);
   };
 
