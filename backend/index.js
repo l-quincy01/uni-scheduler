@@ -21,7 +21,7 @@ const {
   CORS_ORIGIN = "*",
   JWT_ACCESS_SECRET,
   JWT_REFRESH_SECRET,
-  ACCESS_TOKEN_TTL = "1d",
+  ACCESS_TOKEN_TTL = "60m",
   REFRESH_TOKEN_TTL_DAYS = "7",
   NODE_ENV = "development",
 } = process.env;
@@ -112,7 +112,6 @@ const LoginSchema = z.object({
 // Routes --------------------------------------------------------------------------------------------
 
 // POST /api/generate-exam
-
 app.post(
   "/api/generate-exam",
   requireAuth,
@@ -128,14 +127,21 @@ app.post(
           .json({ error: "scheduleId and eventId are required" });
       }
 
-      const fileContents = [];
+      // Upload files to OpenAI first (so model can use them)
+      const uploadedFileRefs = [];
       for (const f of req.files || []) {
-        const content = fs.readFileSync(f.path, "utf8");
-        console.log(content);
-        fileContents.push({ name: f.originalname, content });
+        const uploaded = await openai.files.create({
+          file: fs.createReadStream(f.path),
+          purpose: "user_data",
+        });
+        uploadedFileRefs.push({
+          type: "file",
+          file: { file_id: uploaded.id },
+        });
       }
 
-      const prompt = `
+      // Build the prompt (your engineered version)
+      const examPrompt = `
 You are an expert exam setter for university students.
 You are given either course/lecture notes or exam past papers as context
 to generate relevant exam questions.
@@ -211,17 +217,16 @@ Requirements:
 - Assign realistic mark_allocation values.
 - Output must be a valid JSON array of Questions.
 - Do not include any explanatory text outside the JSON.
-
-Now generate exam questions for the following context:
-${fileContents.map((f) => `File: ${f.name}\n${f.content}`).join("\n\n")}
       `;
 
-      // Call OpenAI (no structured schema, gpt-5-nano as requested)
+      // Call OpenAI with file refs + prompt
       const completion = await openai.chat.completions.create({
-        model: "gpt-5-mini",
+        model: "gpt-5-nano",
         messages: [
-          { role: "system", content: "You are an exam generator." },
-          { role: "user", content: prompt },
+          {
+            role: "user",
+            content: [...uploadedFileRefs, { type: "text", text: examPrompt }],
+          },
         ],
         temperature: 1,
       });
@@ -236,7 +241,7 @@ ${fileContents.map((f) => `File: ${f.name}\n${f.content}`).join("\n\n")}
           .json({ error: "Model did not return valid JSON" });
       }
 
-      // Save exam in Mongo
+      // Save to Mongo
       const exam = await Exam.create({
         sqlUserId,
         scheduleId,
@@ -256,6 +261,150 @@ ${fileContents.map((f) => `File: ${f.name}\n${f.content}`).join("\n\n")}
     }
   }
 );
+
+// app.post(
+//   "/api/generate-exam",
+//   requireAuth,
+//   upload.array("files", 5),
+//   async (req, res) => {
+//     try {
+//       const sqlUserId = Number(req.user.id);
+//       const { scheduleId, eventId, title } = req.body;
+
+//       if (!scheduleId || !eventId) {
+//         return res
+//           .status(400)
+//           .json({ error: "scheduleId and eventId are required" });
+//       }
+
+//       const fileContents = [];
+//       for (const f of req.files || []) {
+//         const content = fs.readFileSync(f.path, "utf8");
+//         console.log(content);
+//         fileContents.push({ name: f.originalname, content });
+//       }
+
+//       const prompt = `
+// You are an expert exam setter for university students.
+// You are given either course/lecture notes or exam past papers as context
+// to generate relevant exam questions.
+
+// STRICTLY use this JSON schema:
+
+// export type Questions =
+//   | MCQQuestion
+//   | Question
+//   | CompoundQuestion
+//   | CompoundGroupedQuestions
+//   | GroupedQuestions;
+
+// export interface MCQQuestion {
+//   type: "mcq";
+//   details: {
+//     question: string;
+//     choices: string[];
+//     answerIndex: number;
+//     mark_allocation: number;
+//   };
+// }
+
+// export interface Question {
+//   type: "question";
+//   details: {
+//     question: string;
+//     model_answer?: string;
+//     mark_allocation: number;
+//   };
+// }
+
+// export interface CompoundQuestion {
+//   type: "compoundQuestion";
+//   details: {
+//     main_question: string;
+//     sub_questions: string[];
+//     model_answer?: string;
+//     mark_allocation: number;
+//   };
+// }
+
+// export interface CompoundGroupedQuestions {
+//   type: "compoundGroupedQuestions";
+//   details: {
+//     main_question?: string;
+//     topic?: string;
+//     groupedQuestions: {
+//       question: string;
+//       model_answer?: string;
+//       mark_allocation: number;
+//     }[];
+//   };
+// }
+
+// export interface GroupedQuestions {
+//   type: "GroupedQuestions";
+//   details: {
+//     topic: string;
+//     groupedQuestions: {
+//       question: string;
+//       model_answer?: string;
+//       mark_allocation: number;
+//     }[];
+//   };
+// }
+
+// Requirements:
+// - Follow the style, structure, and tone of the past paper closely
+//   (repeat some past paper questions verbatim, but not all).
+// - Also create new questions based on the lecture notes to make the exam comprehensive.
+// - Mix question types (MCQs, short-answer, compound, grouped) across the exam.
+// - Assign realistic mark_allocation values.
+// - Output must be a valid JSON array of Questions.
+// - Do not include any explanatory text outside the JSON.
+
+// Now generate exam questions for the following context:
+// ${fileContents.map((f) => `File: ${f.name}\n${f.content}`).join("\n\n")}
+//       `;
+
+//       // Call OpenAI (no structured schema, gpt-5-nano as requested)
+//       const completion = await openai.chat.completions.create({
+//         model: "gpt-5-mini",
+//         messages: [
+//           { role: "system", content: "You are an exam generator." },
+//           { role: "user", content: prompt },
+//         ],
+//         temperature: 1,
+//       });
+
+//       let questions;
+//       try {
+//         questions = JSON.parse(completion.choices[0].message.content);
+//       } catch (e) {
+//         console.error("Failed to parse exam JSON", e);
+//         return res
+//           .status(500)
+//           .json({ error: "Model did not return valid JSON" });
+//       }
+
+//       // Save exam in Mongo
+//       const exam = await Exam.create({
+//         sqlUserId,
+//         scheduleId,
+//         eventId,
+//         title: title?.trim() || "Generated Exam",
+//         questions,
+//       });
+
+//       return res.status(201).json({
+//         examId: exam._id.toString(),
+//         scheduleId,
+//         eventId,
+//       });
+//     } catch (err) {
+//       console.error("[/api/generate-exam] failed:", err);
+//       return res.status(500).json({ error: "Failed to generate exam" });
+//     }
+//   }
+// );
 app.post("/api/generate-schedule", requireAuth, async (req, res) => {
   try {
     const sqlUserId = Number(req.user.id);

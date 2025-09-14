@@ -22,8 +22,5 @@ const ExamSchema = new Schema(
   { timestamps: true }
 );
 
-// Uniqueness: only one exam per (user, schedule, event)
-ExamSchema.index({ sqlUserId: 1, scheduleId: 1, eventId: 1 }, { unique: true });
-
 const Exam = mongoose.models.Exam || mongoose.model("Exam", ExamSchema);
 module.exports = { Exam };
