@@ -34,3 +34,11 @@ async function connectMongo() {
 }
 
 module.exports = { connectMongo, mongoose };
+/*
+
+compoundQuestion
+compoundGroupedQuestions
+groupedQuestions
+GroupedQuestions
+
+*/

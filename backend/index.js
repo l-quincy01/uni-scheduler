@@ -8,16 +8,20 @@ const argon2 = require("argon2");
 const { v4: uuidv4 } = require("uuid");
 const { PrismaClient } = require("@prisma/client");
 const { OpenAI } = require("openai");
-
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
+const { Exam } = require("./src/models/Exam.js");
 const prisma = new PrismaClient();
 const app = express();
 const openai = new OpenAI({});
+
 const {
   PORT = 4000,
   CORS_ORIGIN = "*",
   JWT_ACCESS_SECRET,
   JWT_REFRESH_SECRET,
-  ACCESS_TOKEN_TTL = "15m",
+  ACCESS_TOKEN_TTL = "1d",
   REFRESH_TOKEN_TTL_DAYS = "7",
   NODE_ENV = "development",
 } = process.env;
@@ -33,6 +37,20 @@ esm("./src/db/mongo.js")
   .catch((err) => {
     console.error("[mongo] failed to connect:", err);
   });
+
+const uploadDir = path.join(__dirname, "uploads");
+fs.mkdirSync(uploadDir, { recursive: true });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, uploadDir),
+    filename: (_req, file, cb) => {
+      const safe = file.originalname.replace(/[^\w.\-]+/g, "_");
+      cb(null, Date.now() + "_" + safe);
+    },
+  }),
+  limits: { fileSize: 25 * 1024 * 1024, files: 6 },
+});
 
 // Helpers
 function signAccessToken(user) {
@@ -93,6 +111,151 @@ const LoginSchema = z.object({
 
 // Routes --------------------------------------------------------------------------------------------
 
+// POST /api/generate-exam
+
+app.post(
+  "/api/generate-exam",
+  requireAuth,
+  upload.array("files", 5),
+  async (req, res) => {
+    try {
+      const sqlUserId = Number(req.user.id);
+      const { scheduleId, eventId, title } = req.body;
+
+      if (!scheduleId || !eventId) {
+        return res
+          .status(400)
+          .json({ error: "scheduleId and eventId are required" });
+      }
+
+      const fileContents = [];
+      for (const f of req.files || []) {
+        const content = fs.readFileSync(f.path, "utf8");
+        console.log(content);
+        fileContents.push({ name: f.originalname, content });
+      }
+
+      const prompt = `
+You are an expert exam setter for university students.
+You are given either course/lecture notes or exam past papers as context
+to generate relevant exam questions.
+
+STRICTLY use this JSON schema:
+
+export type Questions =
+  | MCQQuestion
+  | Question
+  | CompoundQuestion
+  | CompoundGroupedQuestions
+  | GroupedQuestions;
+
+export interface MCQQuestion {
+  type: "mcq";
+  details: {
+    question: string;
+    choices: string[];
+    answerIndex: number;
+    mark_allocation: number;
+  };
+}
+
+export interface Question {
+  type: "question";
+  details: {
+    question: string;
+    model_answer?: string;
+    mark_allocation: number;
+  };
+}
+
+export interface CompoundQuestion {
+  type: "compoundQuestion";
+  details: {
+    main_question: string;
+    sub_questions: string[];
+    model_answer?: string;
+    mark_allocation: number;
+  };
+}
+
+export interface CompoundGroupedQuestions {
+  type: "compoundGroupedQuestions";
+  details: {
+    main_question?: string;
+    topic?: string;
+    groupedQuestions: {
+      question: string;
+      model_answer?: string;
+      mark_allocation: number;
+    }[];
+  };
+}
+
+export interface GroupedQuestions {
+  type: "GroupedQuestions";
+  details: {
+    topic: string;
+    groupedQuestions: {
+      question: string;
+      model_answer?: string;
+      mark_allocation: number;
+    }[];
+  };
+}
+
+Requirements:
+- Follow the style, structure, and tone of the past paper closely
+  (repeat some past paper questions verbatim, but not all).
+- Also create new questions based on the lecture notes to make the exam comprehensive.
+- Mix question types (MCQs, short-answer, compound, grouped) across the exam.
+- Assign realistic mark_allocation values.
+- Output must be a valid JSON array of Questions.
+- Do not include any explanatory text outside the JSON.
+
+Now generate exam questions for the following context:
+${fileContents.map((f) => `File: ${f.name}\n${f.content}`).join("\n\n")}
+      `;
+
+      // Call OpenAI (no structured schema, gpt-5-nano as requested)
+      const completion = await openai.chat.completions.create({
+        model: "gpt-5-mini",
+        messages: [
+          { role: "system", content: "You are an exam generator." },
+          { role: "user", content: prompt },
+        ],
+        temperature: 1,
+      });
+
+      let questions;
+      try {
+        questions = JSON.parse(completion.choices[0].message.content);
+      } catch (e) {
+        console.error("Failed to parse exam JSON", e);
+        return res
+          .status(500)
+          .json({ error: "Model did not return valid JSON" });
+      }
+
+      // Save exam in Mongo
+      const exam = await Exam.create({
+        sqlUserId,
+        scheduleId,
+        eventId,
+        title: title?.trim() || "Generated Exam",
+        questions,
+      });
+
+      return res.status(201).json({
+        examId: exam._id.toString(),
+        scheduleId,
+        eventId,
+      });
+    } catch (err) {
+      console.error("[/api/generate-exam] failed:", err);
+      return res.status(500).json({ error: "Failed to generate exam" });
+    }
+  }
+);
 app.post("/api/generate-schedule", requireAuth, async (req, res) => {
   try {
     const sqlUserId = Number(req.user.id);
@@ -534,6 +697,7 @@ app.get("/api/schedules/:id", requireAuth, async (req, res) => {
       title: s.title,
       timezone: s.timezone || "Africa/Johannesburg",
       events: (s.events || []).map((e) => ({
+        id: e._id ? e._id.toString() : undefined,
         title: e.title,
         description: e.description || "",
         color: e.color,
@@ -541,6 +705,7 @@ app.get("/api/schedules/:id", requireAuth, async (req, res) => {
         endDate: new Date(e.endDate).toISOString(),
       })),
       exams: (s.exams || []).map((e) => ({
+        id: e._id ? e._id.toString() : undefined,
         title: e.title,
         description: e.description || "",
         color: e.color,

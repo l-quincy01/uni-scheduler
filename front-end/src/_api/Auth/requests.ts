@@ -53,14 +53,16 @@ export async function getAllSchedules(): Promise<IScheduleInput[]> {
   const schedules = (data?.schedules || []) as IScheduleInput[];
   return schedules;
 }
-export async function getModuleSchedule(moduleID: string): Promise<IScheduleInput[]> {
+export async function getModuleSchedule(
+  moduleID: string
+): Promise<IScheduleInput[]> {
   if (!moduleID) return [];
   const res = await fetch(`${API_BASE}/api/schedules/${moduleID}`, {
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];
   const data = await res.json();
-  const schedule = data?.schedule as (IScheduleInput | undefined);
+  const schedule = data?.schedule as IScheduleInput | undefined;
   return schedule ? [schedule] : [];
 }
 
@@ -114,4 +116,26 @@ export async function getUsers(): Promise<CalendarUser[]> {
       avatarUrl: u.avatarUrl ?? null,
     },
   ];
+}
+
+export async function generateExam(params: {
+  scheduleId: string;
+  eventId: string;
+  files: File[];
+  title?: string;
+}): Promise<{ examId: string; scheduleId: string; eventId: string } | null> {
+  const fd = new FormData();
+  fd.append("scheduleId", params.scheduleId);
+  fd.append("eventId", params.eventId);
+  if (params.title) fd.append("title", params.title);
+  for (const f of params.files) fd.append("files", f);
+
+  const res = await fetch(`${API_BASE}/api/generate-exam`, {
+    method: "POST",
+    headers: { ...authHeader() },
+    body: fd,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.error || "Failed to generate exam");
+  return data as { examId: string; scheduleId: string; eventId: string };
 }
