@@ -44,12 +44,10 @@ type Variant = "Card" | "Thumbnail";
  */
 export interface ContentItem {
   id: string;
-  url: string;
+
   title: string;
-  description?: string;
+
   thumbnailURL?: string;
-  date: string;
-  author: string;
 }
 
 /**
@@ -83,21 +81,12 @@ export default function ContentGrid({
             className=" max-h-[260px]   aspect-square p-2  dark:bg-muted/70 border hover:border-blue-300/30 hover:bg-muted  rounded-md cursor-pointer flex flex-col gap-2 justify-between"
           >
             <div className="font-semibold line-clamp-2 mb-2">{item.title}</div>
-
-            <div className="flex flex-col gap-4">
-              <div className="line-clamp-3">{item.description}</div>
-            </div>
-
-            <div className="flex flex-row justify-between">
-              <div className="text-stone-400 text-sm">{item.date}</div>
-              <Badge variant="secondary">Mock Exam</Badge>
-            </div>
           </div>
         ));
 
       case "Thumbnail":
         return items.map((item, index) => (
-          <Link to={item.id}>
+          <Link to={`${item.id}`}>
             <div
               key={index}
               onClick={() => onCardClick?.(item)}
@@ -127,25 +116,3 @@ export default function ContentGrid({
     </div>
   );
 }
-
-{
-  /*------------------------------------------------------------ */
-}
-
-// <div
-//   key={index}
-//   onClick={() => onCardClick?.(item)}
-//   className="  p-2 h-sm sm:w-full  flex flex-col gap-2 bg-transparent rounded-2xl   hover:bg-accent background h-20"
-//   style={{
-//     backgroundImage: `url("https://lh3.google.com/u/0/d/1ykiMtwCKHZwzbgdPsLkK8qqfBEd9slEaZqy756VnPCY=w416-iv13")`,
-//     backgroundSize: "cover",
-//     backgroundPosition: "center",
-//   }}
-// >
-//   <div className="flex flex-col justify-start">
-//     <div className="text-md truncate">{item.title}</div>
-//     <div className="text-sm text-gray-400 truncate">
-//       {item.date}, by {item.author}
-//     </div>
-//   </div>
-// </div>

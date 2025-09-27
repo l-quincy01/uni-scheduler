@@ -116,28 +116,6 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                   {item.description}
                 </p>
               )}
-              {/* <div>
-                <Collapsible className="text-xs group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90 mt-2">
-                  <CollapsibleTrigger asChild>
-                    <div className="flex flex-row items-center gap-2">
-                      Content Added
-                      <ChevronRight
-                        size={14}
-                        className="transition-transform text-xs"
-                      />
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <ol className=" list-disc pl-6">
-                      <li> History Pdf 1</li>
-                    </ol>
-                  </CollapsibleContent>
-                </Collapsible>
-              </div> */}
-
-              {/* <div className="text-xs flex flex-row items-center gap-2">
-                Preparation for MAM 202 P2 - Linear Algebra
-              </div> */}
 
               <Tooltip>
                 <TooltipTrigger className="flex flex-row  text-xs  items-center gap-2 p-0">
@@ -152,26 +130,7 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
                 </TooltipContent>
               </Tooltip>
 
-              <div className="flex flex-row justify-between items-center mt-2">
-                {/* {(item.date || item.priority) && (
-                  <div className="mt-2 flex items-center gap-2 text-sm font-semibold">
-                    {item.date && (
-                      <span className="flex items-center py-0.5">
-                        Exam Date:&nbsp;
-                        <time dateTime={item.date}>
-                          {new Date(item.date).toLocaleDateString()}
-                        </time>
-                      </span>
-                    )}
-
-                    {item.priority && (
-                      <span className="inline-flex items-center gap-1 rounded-full px-2 border border-amber-200/50 dark:border-amber-400/30 text-amber-700 dark:text-amber-300">
-                        {item.priority}
-                      </span>
-                    )}
-                  </div>
-                )} */}
-              </div>
+              <div className="flex flex-row justify-between items-center mt-2"></div>
             </li>
           ))}
         </KanbanColumn>

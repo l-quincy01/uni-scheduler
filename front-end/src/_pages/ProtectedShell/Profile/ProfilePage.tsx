@@ -30,7 +30,13 @@ export default function ProfilePage() {
     return (
       <div>
         <ProfileHeader name={""} email={""} school={""} avatarUrl={""} />
-        <ProfileContent firstName={""} lastName={""} email={""} phone={""} school={""} />
+        <ProfileContent
+          firstName={""}
+          lastName={""}
+          email={""}
+          phone={""}
+          school={""}
+        />
       </div>
     );
   }

@@ -44,6 +44,7 @@ export default function ExamPage() {
     () => scheduleToKanbanData({ schedules: schedules ?? [] }),
     [schedules]
   );
+  console.log("--------Schedules:" + schedules);
 
   return (
     <div>

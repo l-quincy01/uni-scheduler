@@ -19,6 +19,8 @@ import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { CalendarFold, X } from "lucide-react";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export interface exams {
   title: string;
@@ -39,6 +41,8 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
   const [selectedModules, setSelectedModules] = useState<exams[]>([]);
   const [scheduleTitle, setScheduleTitle] = useState("");
   const [showValidation, setShowValidation] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSelect = (exam: exams) => {
     if (!selectedModules.find((item) => item.title === exam.title)) {
@@ -54,23 +58,50 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
     setShowValidation(true);
 
     if (scheduleTitle.trim().length >= 3 && selectedModules.length > 0) {
-      try {
-        const res = await fetch("http://localhost:4000/api/generate-schedule", {
+      setLoading(true);
+      const schedulePromise = fetch(
+        "http://localhost:4000/api/generate-schedule",
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, //for verifying jwt authorisation
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           body: JSON.stringify({
             scheduleTitle,
             selectedModules,
           }),
-        });
+        }
+      ).then((res) => {
+        if (!res.ok) throw new Error("Failed to generate schedule");
+        console.log(res.json);
+        return res.json();
+      });
 
-        const data = await res.json();
+      toast.promise(schedulePromise, {
+        loading: "Generating Schedule...",
+        success: (data) => (
+          <div className="flex items-center gap-2">
+            <span>Schedule generated successfully</span>
+            <Button
+              onClick={() => navigate(`/exam/${data.schedules[0].id}`)}
+              className="ml-2 underline text-blue-500 hover:text-blue-600"
+            >
+              View
+            </Button>
+          </div>
+        ),
+        duration: 5000,
+        error: (err) => err?.message || "Failed to generate schedule.",
+      });
+
+      try {
+        const data = await schedulePromise;
         console.log("Saved Schedule:", data);
       } catch (e) {
         console.error("Failed to generate schedule", e);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -180,8 +211,17 @@ export default function AddSchedule({ modules, heading }: AddScheduleProps) {
           variant="secondary"
           className="flex flex-row gap-1 items-center cursor-pointer"
           onClick={handleCreate}
+          disabled={loading}
         >
-          <CalendarFold size={14} /> Create Schedule
+          {loading ? (
+            <>
+              <CalendarFold size={14} className="animate-spin" /> Generating…
+            </>
+          ) : (
+            <>
+              <CalendarFold size={14} /> Create Schedule
+            </>
+          )}
         </Button>
       </div>
     </div>

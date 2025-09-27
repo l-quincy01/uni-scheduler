@@ -22,6 +22,7 @@ export interface ICalendarCell {
 }
 
 export interface IScheduleItemInput {
+  id: string;
   title: string;
   description: string;
   color: TEventColor;

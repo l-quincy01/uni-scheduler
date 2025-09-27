@@ -40,18 +40,20 @@ import {
 import { useContentPanel } from "@/_app/Context/ContentPanelContext";
 import { useCourseCalendar } from "@/_app/Context/CourseCalendarContext";
 import { handleDownloadPDF } from "@/utils/pdfExport";
+import { useEffect, useMemo, useState } from "react";
+import { getExamById } from "@/_api/Auth/requests";
 
 function isObjectId(segment: string) {
   return /^[0-9a-fA-F]{24}$/.test(segment);
 }
 
-function titleCase(s: string) {
-  if (s == "content") {
-    return "Practice Exams ";
-  } else {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  }
-}
+// function titleCase(s: string) {
+//   if (s == "content") {
+//     return "Practice Exams ";
+//   } else {
+//     return s.charAt(0).toUpperCase() + s.slice(1);
+//   }
+// }
 
 export default function Index() {
   const { isContentPanelOpen, setIsContentPanelOpen } = useContentPanel();
@@ -60,109 +62,99 @@ export default function Index() {
 
   const location = useLocation();
 
-  const allSegments = location.pathname.split("/").filter(Boolean);
+  const segments = useMemo(
+    () => location.pathname.split("/").filter(Boolean),
+    [location.pathname]
+  );
+  // expected: ["exam", scheduleId, "content", groupKey, examId?]
+  const scheduleId =
+    segments[1] && isObjectId(segments[1]) ? segments[1] : undefined;
+  const hasContent = segments[2] === "content";
+  const groupKey = hasContent ? segments[3] : undefined;
+  const examId =
+    hasContent && segments.length >= 5 && isObjectId(segments[4])
+      ? segments[4]
+      : undefined;
 
-  const objectId = allSegments.find(isObjectId);
-
-  const visibleSegments = allSegments.filter((seg) => !isObjectId(seg));
-  // console.log("Last segment:" + );
-
-  const buildHref = (visibleIndex: number) => {
-    const parts: string[] = [];
-    for (let i = 0; i <= visibleIndex; i++) {
-      parts.push(visibleSegments[i]);
-      if (visibleSegments[i] === "exam" && objectId) {
-        parts.push(objectId);
-      }
+  const [examTitle, setExamTitle] = useState<string | null>(null);
+  useEffect(() => {
+    let ignore = false;
+    if (!examId) {
+      setExamTitle(null);
+      return;
     }
-    return "/" + parts.join("/");
-  };
-
-  function getLocationBase(s: string) {
-    let base = "";
-    let seenCount = 0;
-
-    for (const c of s) {
-      if (c !== "/") {
-        base += c;
-      } else {
-        seenCount++;
+    (async () => {
+      try {
+        const data = await getExamById(examId);
+        if (!ignore) setExamTitle(data?.title || null);
+      } catch {
+        if (!ignore) setExamTitle(null);
       }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, [examId]);
 
-      if (seenCount > 1) {
-        break;
-      }
-    }
-
-    return base;
-  }
-
-  const pathnameLastSegment = visibleSegments[visibleSegments.length - 1];
-  console.log("Length: " + visibleSegments.length);
   function renderNav() {
-    switch (pathnameLastSegment) {
-      case "content":
-        return (
-          <div className="flex flex-row gap-1">
-            <Tooltip>
-              <TooltipTrigger>
-                <div
-                  className={`hover:bg-muted p-2 rounded-full ${
-                    isCourseCalendarOpen ? "bg-muted" : ""
-                  }`}
-                  onClick={() => setCourseCalendarOpen((p) => !p)}
-                >
-                  {isCourseCalendarOpen ? (
-                    <Kanban size={18} />
-                  ) : (
-                    <CalendarFold size={18} />
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
+    // Show exam nav on any /content route (including /content/:groupKey)
+    if (hasContent) {
+      return (
+        <div className="flex flex-row gap-1">
+          <Tooltip>
+            <TooltipTrigger>
+              <div
+                className={`hover:bg-muted p-2 rounded-full ${
+                  isCourseCalendarOpen ? "bg-muted" : ""
+                }`}
+                onClick={() => setCourseCalendarOpen((p) => !p)}
+              >
                 {isCourseCalendarOpen ? (
-                  <span>View Kanban</span>
+                  <Kanban size={18} />
                 ) : (
-                  <span>View Calendar</span>
+                  <CalendarFold size={18} />
                 )}
-              </TooltipContent>
-            </Tooltip>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isCourseCalendarOpen ? (
+                <span>View Kanban</span>
+              ) : (
+                <span>View Calendar</span>
+              )}
+            </TooltipContent>
+          </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger>
-                {" "}
-                <div
-                  className={`hover:bg-muted p-2 rounded-full ${
-                    isContentPanelOpen ? "bg-muted" : ""
-                  }`}
-                  onClick={() => setIsContentPanelOpen((p) => !p)}
-                >
-                  <Archive size={18} />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Content for this exam</TooltipContent>
-            </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              {" "}
+              <div
+                className={`hover:bg-muted p-2 rounded-full ${
+                  isContentPanelOpen ? "bg-muted" : ""
+                }`}
+                onClick={() => setIsContentPanelOpen((p) => !p)}
+              >
+                <Archive size={18} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Content for this exam</TooltipContent>
+          </Tooltip>
 
-            <Dialog>
-              <DialogTrigger>
-                <Button variant="secondary">
-                  Exam
-                  <Plus size={20} />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="scale-90">
-                <AddExamModal />
-              </DialogContent>
-            </Dialog>
-          </div>
-        );
-      case "calendar":
-        return <span>Calendar</span>;
-      case "profile":
-        return <span>Profile</span>;
-      default:
-        return <></>;
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="secondary">
+                Exam
+                <Plus size={20} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="scale-90">
+              <AddExamModal />
+            </DialogContent>
+          </Dialog>
+        </div>
+      );
     }
+    return <></>;
   }
 
   return (
@@ -170,7 +162,72 @@ export default function Index() {
       <div className="flex flex-row justify-between">
         <Breadcrumb>
           <BreadcrumbList>
-            {visibleSegments.map((segment, index) => {
+            {scheduleId && (
+              <BreadcrumbItem>
+                {hasContent || examId ? (
+                  <BreadcrumbLink asChild>
+                    <Link to={`/exam/${scheduleId}`}>Exam</Link>
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage>Exam</BreadcrumbPage>
+                )}
+                {(hasContent || examId) && (
+                  <BreadcrumbSeparator>
+                    <SlashIcon className="w-3 h-3" />
+                  </BreadcrumbSeparator>
+                )}
+              </BreadcrumbItem>
+            )}
+
+            {scheduleId && hasContent && (
+              <BreadcrumbItem>
+                {examId ? (
+                  <BreadcrumbLink asChild>
+                    <Link to={`/exam/${scheduleId}/content/${groupKey}`}>
+                      Practice Exams
+                    </Link>
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage>Practice Exams</BreadcrumbPage>
+                )}
+                {examId && (
+                  <BreadcrumbSeparator>
+                    <SlashIcon className="w-3 h-3" />
+                  </BreadcrumbSeparator>
+                )}
+              </BreadcrumbItem>
+            )}
+
+            {scheduleId && hasContent && examId && (
+              <BreadcrumbItem>
+                <BreadcrumbPage>{examTitle || "Exam"}</BreadcrumbPage>
+              </BreadcrumbItem>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
+        {scheduleId && hasContent && examId && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div onClick={handleDownloadPDF} className="p-0 m-0">
+                <Download size={18} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Download</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+        {renderNav()}
+      </div>
+
+      <Outlet />
+    </div>
+  );
+}
+{
+  /* 
+
+      {visibleSegments.map((segment, index) => {
               const to = buildHref(index);
               const isLast = index === visibleSegments.length - 1;
 
@@ -191,24 +248,17 @@ export default function Index() {
                 </BreadcrumbItem>
               );
             })}
-          </BreadcrumbList>
-        </Breadcrumb>
-        {visibleSegments.length >= 3 && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div onClick={handleDownloadPDF} className="p-0 m-0">
-                <Download size={18} />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Download</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-        {renderNav()}
-      </div>
 
-      <Outlet />
-    </div>
-  );
+
+            ------------------------------
+              
+            
+           
+            
+            
+            
+            
+            
+            
+            */
 }

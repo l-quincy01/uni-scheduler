@@ -16,7 +16,7 @@ export type User = {
 };
 
 export async function getUsers(): Promise<User[]> {
-  const res = await fetch(`${API_BASE}/profile/me`, {
+  const res = await fetch(`${API_BASE}/auth/profile/me`, {
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];

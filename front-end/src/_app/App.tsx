@@ -6,7 +6,7 @@ import DashboardPage from "@/_pages/ProtectedShell/Dashboard/DashboardPage";
 import CalendarPage from "@/_pages/ProtectedShell/Calendar/CalendarPage";
 import ProfilePage from "@/_pages/ProtectedShell/Profile/ProfilePage";
 import ExamPage from "@/_pages/ProtectedShell/Exam/ExamPage";
-import ExamAgenda from "@/_pages/ProtectedShell/Exam/agenda/ExamAgenda";
+
 import ExamContent from "@/components/Exam/ExamContent/ExamContent";
 import Index from "@/_pages/ProtectedShell/Exam/Index";
 import ExamContentView from "@/_pages/ProtectedShell/Exam/content/ExamContentView";
@@ -21,7 +21,7 @@ export default function App() {
     <AuthProvider>
       <ThemeProvider>
         <Routes>
-          {/* Public-only */}
+          {/* Public */}
           <Route element={<GuestOnly />}>
             <Route path="/landing" element={<IndexPage />} />
             <Route path="/signin" element={<AuthPage />} />
@@ -36,9 +36,12 @@ export default function App() {
 
               <Route path="exam/:id" element={<Index />}>
                 <Route index element={<ExamPage />} />
-                <Route path="agenda" element={<ExamAgenda />} />
-                <Route path="content" element={<ExamContent />} />
-                <Route path="content/*" element={<ExamContentView />} />
+
+                <Route path="content/:groupKey" element={<ExamContent />} />
+                <Route
+                  path="content/:groupKey/:id"
+                  element={<ExamContentView />}
+                />
               </Route>
             </Route>
           </Route>
