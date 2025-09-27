@@ -18,7 +18,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
 
-  // Boot: load from storage, optionally refresh access
   useEffect(() => {
     const savedUser = localStorage.getItem("auth_user");
     const refreshToken = localStorage.getItem("refreshToken");
@@ -54,7 +53,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setUser(null);
           }
         } catch {
-          // On unexpected failure, clear tokens to avoid loops
           localStorage.removeItem("auth_user");
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
@@ -79,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signOut = async () => {
     const rt = localStorage.getItem("refreshToken") || "";
-    await logoutUser(rt, true); // revoke all refresh tokens (logout everywhere)
+    await logoutUser(rt, true);
     localStorage.removeItem("auth_user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");

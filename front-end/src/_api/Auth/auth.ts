@@ -74,7 +74,6 @@ export async function refreshAccessToken(refreshToken: string) {
 }
 
 export async function logoutUser(refreshToken: string, all: boolean = false) {
-  // Best-effort revoke
   await fetch(`${BASE}/auth/logout`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

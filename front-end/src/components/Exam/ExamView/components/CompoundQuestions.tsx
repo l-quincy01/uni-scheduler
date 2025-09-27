@@ -9,9 +9,10 @@ export default function CompoundQuestion({
 }: {
   index: number;
   main_question: string;
-  sub_questions: string[];
+  sub_questions?: string[];
   mark_allocation: number;
 }) {
+  const subQs = Array.isArray(sub_questions) ? sub_questions : [];
   return (
     <div className="space-y-4">
       <div className="flex gap-4 items-start">
@@ -24,7 +25,7 @@ export default function CompoundQuestion({
           </div>
         </div>
       </div>
-      {sub_questions.map((q, i) => (
+      {subQs.map((q, i) => (
         <div key={i} className="pl-8 flex flex-col gap-2">
           <div className="flex gap-2 items-start">
             <div className="text-lg font-semibold">

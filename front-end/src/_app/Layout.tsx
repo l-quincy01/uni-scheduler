@@ -26,7 +26,6 @@ export default function Layout() {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="scale-90">
-                    {/*Modules are auto populated from the data scrapped */}
                     <AddScheduleLoader />
                   </DialogContent>
                 </Dialog>

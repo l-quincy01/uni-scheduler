@@ -1,10 +1,25 @@
-const { mongoose } = require("../db/mongo.js");
+import { mongoose } from "../db/mongo";
+import { Schema, Document, Model } from "mongoose";
 
 const collection = process.env.MONGO_COLLECTION || "user_schedules";
 
-const UserProfileSchema = new mongoose.Schema(
+//interface
+export interface IUserProfile extends Document {
+  sqlUserId: number;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  school?: string | null;
+  avatarUrl?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+
+  name: string;
+}
+
+const UserProfileSchema = new Schema<IUserProfile>(
   {
-    // ← SQL user id; your single source of truth for identity
     sqlUserId: { type: Number, required: true, unique: true, index: true },
 
     firstName: { type: String, default: null, trim: true },
@@ -17,13 +32,12 @@ const UserProfileSchema = new mongoose.Schema(
   { timestamps: true, collection }
 );
 
-UserProfileSchema.virtual("name").get(function () {
+UserProfileSchema.virtual("name").get(function (this: IUserProfile) {
   return `${this.firstName || ""} ${this.lastName || ""}`.trim();
 });
+
 UserProfileSchema.set("toJSON", { virtuals: true });
 
-const UserProfile =
+export const UserProfile: Model<IUserProfile> =
   mongoose.models.UserProfile ||
-  mongoose.model("UserProfile", UserProfileSchema, collection);
-
-module.exports = { UserProfile };
+  mongoose.model<IUserProfile>("UserProfile", UserProfileSchema, collection);

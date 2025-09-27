@@ -9,13 +9,21 @@ const COLOR_DOT_MAP: Record<string, string> = {
 
 function subjectFromEventTitle(title: string): string {
   const m = title.match(
-    /^(?:\s*Study:\s*)?(.+?)(?:\s*\(Session\s*\d+\)\s*)?$/i
+    /^(?:\s*(?:Study|Exam):\s*)?(.+?)(?:\s*\(Session\s*\d+\)\s*)?$/i
   );
   if (m) return m[1].trim();
   return title
-    .replace(/^Study:\s*/i, "")
+    .replace(/^(?:Study|Exam):\s*/i, "")
     .replace(/\s*\(Session\s*\d+\)\s*$/i, "")
     .trim();
+}
+
+function slugifySubject(subject: string): string {
+  return subject
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function toYMD(iso: string): string {
@@ -34,6 +42,7 @@ function sessionFromEventTitle(title: string): string {
 
 /** Types (adjust or remove if using JS) */
 type ScheduleEvent = {
+  id?: string; // provided by API
   title: string;
   description: string;
   color: string;
@@ -58,10 +67,11 @@ type KanbanItem = {
   description: string;
   type: "Study";
   date: string; // YYYY-MM-DD
+  eventId?: string; // underlying schedule event
 };
 
 type KanbanGroup = {
-  id: string; // index within data[] as string for accessibility ids
+  id: string; // stable group key (subject slug)
   title: string; // "Study: <Subject>"
   colorDot: string; // Tailwind class
   items: KanbanItem[];
@@ -93,6 +103,7 @@ export function scheduleToKanbanData(schedule: ScheduleInput): KanbanBoard[] {
         description: ev.description,
         type: "Study",
         date: toYMD(ev.startDate),
+        eventId: ev.id,
       };
 
       if (!groupsMap.has(subject)) {
@@ -109,9 +120,9 @@ export function scheduleToKanbanData(schedule: ScheduleInput): KanbanBoard[] {
       items: g.items.sort((a, b) => a.date.localeCompare(b.date)),
     }));
 
-    // Assign index-based IDs
-    const data: KanbanGroup[] = groupsArr.map((g, groupIdx) => ({
-      id: String(groupIdx),
+    // Assign stable subject-based IDs (slug)
+    const data: KanbanGroup[] = groupsArr.map((g) => ({
+      id: slugifySubject(g.title),
       title: g.title,
       colorDot: g.colorDot,
       items: g.items.map((it, itemIdx) => ({

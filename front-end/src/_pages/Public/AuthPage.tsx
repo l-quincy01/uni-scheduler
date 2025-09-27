@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 
 export default function AuthPage() {
-  const [showLogin, setShowlogin] = useState(false);
+  const [showLogin, setShowlogin] = useState(true);
 
   return (
     <div className="relative container flex-1 shrink-0 items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

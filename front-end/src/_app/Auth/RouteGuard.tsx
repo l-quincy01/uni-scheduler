@@ -6,7 +6,6 @@ export function RequireAuth() {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  // add skeleton
   if (loading) return null;
   if (!user)
     return <Navigate to="/signin" replace state={{ from: location }} />;

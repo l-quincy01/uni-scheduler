@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface GroupedQuestionsProps {
   index: number;
   topic: string;
-  groupedQuestions: {
+  groupedQuestions?: {
     question: string;
     model_answer?: string;
     mark_allocation: number;
@@ -17,18 +17,19 @@ export default function GroupedQuestions({
   topic,
   groupedQuestions,
 }: GroupedQuestionsProps) {
+  const groups = Array.isArray(groupedQuestions) ? groupedQuestions : [];
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 items-start">
         <div className="text-lg font-semibold">
           Question {index}. [
-          {groupedQuestions.reduce((sum, q) => sum + q.mark_allocation, 0)}{" "}
+          {groups.reduce((sum, q) => sum + (q.mark_allocation || 0), 0)}{" "}
           marks]
         </div>
         <div className="italic text-muted-foreground">{topic}</div>
       </div>
 
-      {groupedQuestions.map((q, i) => (
+      {groups.map((q, i) => (
         <div key={i} className="flex flex-col gap-4">
           <div className="flex gap-4 items-start">
             <div className="text-lg font-semibold">

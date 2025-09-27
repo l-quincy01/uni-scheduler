@@ -71,7 +71,7 @@ export function KanbanColumn({
         {pathname === "/" ? (
           <></>
         ) : (
-          <Link to={"content"}>
+          <Link to={`content/${id}`}>
             <Button
               variant="outline"
               className="w-fit h-fit py-1 px-1 cursor-pointer"
