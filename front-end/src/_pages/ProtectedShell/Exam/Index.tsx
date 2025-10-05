@@ -66,7 +66,7 @@ export default function Index() {
     () => location.pathname.split("/").filter(Boolean),
     [location.pathname]
   );
-  // expected: ["exam", scheduleId, "content", groupKey, examId?]
+
   const scheduleId =
     segments[1] && isObjectId(segments[1]) ? segments[1] : undefined;
   const hasContent = segments[2] === "content";
@@ -97,10 +97,24 @@ export default function Index() {
   }, [examId]);
 
   function renderNav() {
-    // Show exam nav on any /content route (including /content/:groupKey)
     if (hasContent) {
       return (
         <div className="flex flex-row gap-1">
+          {scheduleId && hasContent && examId && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  onClick={handleDownloadPDF}
+                  className="hover:bg-muted p-2 rounded-full"
+                >
+                  <Download size={18} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Download</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
           <Tooltip>
             <TooltipTrigger>
               <div
@@ -205,7 +219,7 @@ export default function Index() {
             )}
           </BreadcrumbList>
         </Breadcrumb>
-        {scheduleId && hasContent && examId && (
+        {/* {scheduleId && hasContent && examId && (
           <Tooltip>
             <TooltipTrigger asChild>
               <div onClick={handleDownloadPDF} className="p-0 m-0">
@@ -216,49 +230,11 @@ export default function Index() {
               <p>Download</p>
             </TooltipContent>
           </Tooltip>
-        )}
+        )} */}
         {renderNav()}
       </div>
 
       <Outlet />
     </div>
   );
-}
-{
-  /* 
-
-      {visibleSegments.map((segment, index) => {
-              const to = buildHref(index);
-              const isLast = index === visibleSegments.length - 1;
-
-              return (
-                <BreadcrumbItem key={to}>
-                  {isLast ? (
-                    <BreadcrumbPage>{titleCase(segment)}</BreadcrumbPage>
-                  ) : (
-                    <BreadcrumbLink asChild>
-                      <Link to={to}>{titleCase(segment)}</Link>
-                    </BreadcrumbLink>
-                  )}
-                  {!isLast && (
-                    <BreadcrumbSeparator>
-                      <SlashIcon className="w-3 h-3" />
-                    </BreadcrumbSeparator>
-                  )}
-                </BreadcrumbItem>
-              );
-            })}
-
-
-            ------------------------------
-              
-            
-           
-            
-            
-            
-            
-            
-            
-            */
 }
