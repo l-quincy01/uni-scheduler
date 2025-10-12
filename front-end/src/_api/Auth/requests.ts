@@ -12,26 +12,6 @@ CHANGES TO BE MADE LATER
 
 -----------------------------------------------
 */
-export type CalendarUser = {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string | null;
-  school?: string | null;
-  avatarUrl?: string | null;
-};
-
-export type CalendarEvent = {
-  id: string;
-  scheduleId: string;
-  title: string;
-  description: string;
-  color: string;
-  startDate: string; // ISO
-  endDate: string; // ISO
-  user: CalendarUser | null;
-};
 
 export async function getEvents(): Promise<CalendarEvent[]> {
   const res = await fetch(`${API_BASE}/api/calendar/events`, {
@@ -64,14 +44,6 @@ export async function getModuleSchedule(
   const schedule = data?.schedule as IScheduleInput | undefined;
   return schedule ? [schedule] : [];
 }
-
-// Sidebar-friendly schedules
-export type NavSchedule = {
-  id: string;
-  title: string;
-  url: "/exam";
-  isActive: boolean;
-};
 
 export async function getNavSchedules(): Promise<NavSchedule[]> {
   const res = await fetch(`${API_BASE}/api/schedules`, {
@@ -153,16 +125,6 @@ export async function generateExam(params: {
   };
 }
 
-export type ExamSummary = {
-  id: string;
-  title: string;
-  scheduleId: string | null;
-  eventId: string | null;
-  groupKey: string | null;
-  groupTitle: string | null;
-  createdAt: string;
-};
-
 export async function getAllExams(opts?: {
   scheduleId?: string;
   groupKey?: string;
@@ -196,8 +158,6 @@ export async function getExamsForSchedule(
   const exams = (data?.exams || []) as ExamSummary[];
   return exams;
 }
-
-export type ExamDetail = ExamSummary & { questions: any };
 
 export async function getExamById(
   examId: string,

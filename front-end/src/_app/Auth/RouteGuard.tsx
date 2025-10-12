@@ -8,7 +8,7 @@ export function RequireAuth() {
 
   if (loading) return null;
   if (!user)
-    return <Navigate to="/signin" replace state={{ from: location }} />;
+    return <Navigate to="/welcome" replace state={{ from: location }} />;
 
   return <Outlet />;
 }

@@ -15,11 +15,11 @@ export default function ExamPage() {
   useEffect(() => {
     if (!safeId) return;
 
-    //force remount when id changes
+ 
     let ignore = false;
     const ac = new AbortController();
 
-    //  id change trigger a fresh load state
+    
     setLoading(true);
     setSchedules(null);
 
