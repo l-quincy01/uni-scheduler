@@ -2,7 +2,8 @@ import MockExam from "@/components/Exam/ExamView/MockExam";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import type { Questions } from "@/models/Exam/ExamQuestionsModel";
-import { getExamById, type ExamDetail } from "@/_api/Auth/requests";
+import { getExamById } from "@/_api/exams.api";
+import type { ExamDetail } from "@/types/exam.types";
 
 export default function ExamContentView() {
   const { id } = useParams<{ id: string }>();

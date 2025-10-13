@@ -1,6 +1,6 @@
 import ProfileContent from "@/components/profile/components/profile-content";
 import ProfileHeader from "@/components/profile/components/profile-header";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getUsers, type User } from "@/_api/Auth/users";
 
 export default function ProfilePage() {

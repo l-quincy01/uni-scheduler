@@ -22,19 +22,14 @@
 
 import { Badge } from "@/components/ui/badge";
 import { KanbanColumn } from "@/components/Dashboard/Kanban/KanbanColumn";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronRight, SquareArrowOutUpRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import { SquareArrowOutUpRight } from "lucide-react";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Link, useLocation } from "react-router";
 
 /**
  * Represents an item within a Kanban column.

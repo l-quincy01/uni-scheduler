@@ -18,16 +18,6 @@
  * @todo
  */
 
-import React from "react";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { EllipsisVertical, Trash2 } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router";
 
 type Variant = "Card" | "Thumbnail";

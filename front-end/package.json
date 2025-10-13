@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "imports": {
+    "#api/*": "./_api/*"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -34,6 +37,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
     "framer-motion": "^12.23.12",
     "html2canvas-pro": "^1.5.11",
     "jspdf": "^3.0.2",

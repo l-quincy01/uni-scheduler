@@ -1,9 +1,10 @@
 import Kanban from "@/components/Dashboard/Kanban/Kanban";
 import { scheduleToKanbanData } from "@/utils/scheduleToKanban";
-import { getModuleSchedule } from "@/_api/Auth/requests";
+
 import { useEffect, useMemo, useState } from "react";
 import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
 import { useParams } from "react-router";
+import { getModuleSchedule } from "@/_api/schedules.api";
 
 export default function ExamPage() {
   const [schedules, setSchedules] = useState<IScheduleInput[] | null>(null);
@@ -15,11 +16,9 @@ export default function ExamPage() {
   useEffect(() => {
     if (!safeId) return;
 
-    //force remount when id changes
     let ignore = false;
     const ac = new AbortController();
 
-    //  id change trigger a fresh load state
     setLoading(true);
     setSchedules(null);
 

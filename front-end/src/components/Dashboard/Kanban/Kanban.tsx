@@ -39,7 +39,6 @@ export default function Kanban({ boards }: KanbanProps) {
 
   const [selectedTab, setSelectedTab] = useState(boards[0].title);
 
-  console.log("DATA-------------" + boards[0].data[0]);
   return (
     <div className=" flex flex-col py-2 px-4 rounded-xl gap-4">
       {/* Tabs */}

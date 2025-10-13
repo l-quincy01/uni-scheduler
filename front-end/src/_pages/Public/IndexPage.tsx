@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/Hero/hero-section-1";
-import React from "react";
+
+// const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export default function IndexPage() {
   return (

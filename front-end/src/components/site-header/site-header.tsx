@@ -46,7 +46,7 @@ export default function SiteHeader() {
       case "exam":
         return (
           <div className="w-full flex flex-row justify-between items-center">
-            <h1 className="text-base font-medium">History</h1>
+            <h1 className="text-base font-medium"> </h1>
             <div>
               {/* <Tooltip>
                 <TooltipTrigger>

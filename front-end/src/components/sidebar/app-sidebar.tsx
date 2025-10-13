@@ -1,25 +1,9 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  CalendarDays,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  LayoutDashboard,
-  LibraryBig,
-  Map,
-  MessageCircle,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { CalendarDays, LayoutDashboard } from "lucide-react";
 
 import { NavSchedule } from "@/components/sidebar/nav-schedule";
-import { NavProjects } from "@/components/sidebar/nav-projects";
 
 import {
   Sidebar,
@@ -28,15 +12,14 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
+
 import { Link } from "react-router";
 import { NavMain } from "./nav-main";
 import type { User } from "@/_api/Auth/users";
 import { getUsers } from "@/_api/Auth/users";
-import { getNavSchedules } from "@/_api/Auth/requests";
+import { getNavSchedules } from "@/_api/schedules.api";
 
 interface navSchedule {
   id: string;
@@ -45,10 +28,7 @@ interface navSchedule {
   isActive: boolean;
 }
 
-// This is sample data.
 const data = {
-  // user is now loaded dynamically
-
   navMain: [
     {
       title: "Dashboard",
@@ -104,9 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: user?.avatarUrl ?? "",
   };
 
-
   // navSchedules is derived from API; if empty, no schedules will render
-
 
   return (
     <Sidebar collapsible="icon" {...props}>
