@@ -1,35 +1,17 @@
 "use client";
 
-import { ChevronRight, Plus, type LucideIcon } from "lucide-react";
+import { Plus, type LucideIcon } from "lucide-react";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "../ui/button";
-import AddSchedule from "../Modals/ExamSchedule/AddSchedule";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import AddScheduleLoader from "../Modals/ExamSchedule/AddScheduleLoader";
 
 export function NavSchedule({
@@ -78,47 +60,3 @@ export function NavSchedule({
     </SidebarGroup>
   );
 }
-
-const dummyModules = [
-  {
-    category: "Psychology",
-    exams: [
-      {
-        title: "Masters in Counselling Psychology Paper 1: Assessment",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title:
-          "Organisational Psychology Honours - Occupational Health & Wellbeing",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title: "Psychology 202 Paper 2",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-    ],
-  },
-  {
-    category: "Math",
-    exams: [
-      {
-        title: "Mat314",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title: "Mat301",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-      {
-        title: "Mat202",
-        date: "Thu - 23 October 2025",
-        time: "AM (09H00)",
-      },
-    ],
-  },
-];

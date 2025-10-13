@@ -7,7 +7,7 @@ import { useCourseCalendar } from "@/_app/Context/CourseCalendarContext";
 import { CalendarSkeleton } from "@/components/Calendar/modules/components/calendar/skeletons/calendar-skeleton";
 import { Calendar } from "@/components/Calendar/modules/components/calendar/calendar";
 import ExamContentPanel from "./ExamContentPanel";
-import { getAllExams } from "@/_api/Auth/requests";
+import { getAllExams } from "@/_api/exams.api";
 
 export default function ExamContent() {
   const { isCourseCalendarOpen } = useCourseCalendar();
@@ -67,12 +67,3 @@ export default function ExamContent() {
     </div>
   );
 }
-
-const contentGridData = {
-  practiceExams: [
-    {
-      id: "68c706758ba4b02ff5481c15",
-      title: "Limits and series of functions",
-    },
-  ],
-};

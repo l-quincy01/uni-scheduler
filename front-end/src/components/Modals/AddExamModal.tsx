@@ -4,8 +4,10 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { LoaderIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
-import { generateExam, getModuleSchedule } from "@/_api/Auth/requests";
+
 import { toast } from "sonner";
+import { getModuleSchedule } from "@/_api/schedules.api";
+import { generateExam } from "@/_api/exams.api";
 
 type EventOption = { id: string; title: string; when?: string };
 
@@ -45,7 +47,6 @@ export default function AddExamModal() {
         ];
         if (mounted) setEventOptions(opts);
 
-        // Auto-select event by matching groupKey to slug(subject(title))
         const subjectFromEventTitle = (t: string) => {
           const m = String(t).match(
             /^(?:\s*(?:Study|Exam):\s*)?(.+?)(?:\s*\(Session\s*\d+\)\s*)?$/i
@@ -85,7 +86,6 @@ export default function AddExamModal() {
   }, [scheduleId, groupKey]);
 
   const handleFileUpload = (uploaded: File[]) => {
-    // accumulate incoming files but cap at 5
     setFiles((prev) => {
       const merged = [...prev, ...uploaded].slice(0, 5);
       if (merged.length > 5) {
@@ -149,26 +149,6 @@ export default function AddExamModal() {
 
     try {
       await examGenerationPromise;
-
-      // const res = await generateExam({
-      //   scheduleId,
-      //   eventId: selectedEventId,
-      //   files,
-      //   title: title.trim() || undefined,
-      //   groupKey: groupKey || undefined,
-      // });
-      // console.log("Exam generated:", res);
-      // toast.success("Exam generated successfully", {
-      //   action: {
-      //     label: "View",
-      //     onClick: () =>
-      //       navigate(
-      //         res?.groupKey
-      //           ? `/exam/${res?.scheduleId}/content/${res.groupKey}`
-      //           : `/exam/${res?.scheduleId}/content`
-      //       ),
-      //   },
-      // });
     } catch (err: any) {
       setValidationError(err?.message || "Failed to generate exam.");
     } finally {
@@ -190,7 +170,6 @@ export default function AddExamModal() {
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      {/* Event selection removed; eventId is auto-selected by groupKey */}
       {loadingEvents ? (
         <div className="text-sm text-muted-foreground inline-flex items-center gap-1">
           <LoaderIcon className="animate-spin" size={14} /> Loading events…

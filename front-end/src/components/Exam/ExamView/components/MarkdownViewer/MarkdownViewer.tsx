@@ -1,4 +1,3 @@
-import React from "react";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import { getCodeString } from "rehype-rewrite";
 import katex from "katex";

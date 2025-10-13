@@ -3,8 +3,9 @@ import { CalendarBody } from "@/components/Calendar/modules/components/calendar/
 import { CalendarProvider } from "@/components/Calendar/modules/components/calendar/contexts/calendar-context";
 import { DndProvider } from "@/components/Calendar/modules/components/calendar/contexts/dnd-context";
 import { CalendarHeader } from "@/components/Calendar/modules/components/calendar/header/calendar-header";
-import { getAllSchedules } from "@/_api/Auth/requests";
+
 import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
+import { getAllSchedules } from "@/_api/schedules.api";
 
 export function Calendar() {
   const [schedules, setSchedules] = useState<IScheduleInput[] | null>(null);

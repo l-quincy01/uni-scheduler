@@ -59,11 +59,6 @@ export default function ProfileHeader({
           </Avatar>
 
           <div className="flex-1 space-y-2">
-            {/* <div className="flex flex-col gap-2 md:flex-row md:items-center">
-              <h1 className="text-2xl font-bold">{name}</h1>
-              {badge && <Badge variant="secondary">{badge}</Badge>}
-            </div> */}
-
             <div className="flex items-center gap-1 text-muted-foreground">
               <Mail className="size-4" />
               {email}
@@ -74,10 +69,6 @@ export default function ProfileHeader({
                 <University className="size-4" />
                 {school}
               </div>
-              {/* <div className="flex items-center gap-1">
-                <Calendar className="size-4" />
-                {joined}
-              </div> */}
             </div>
           </div>
         </div>

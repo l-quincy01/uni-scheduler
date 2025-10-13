@@ -1,4 +1,3 @@
-// AddScheduleLoader.tsx
 import React, { useEffect, useState } from "react";
 import AddSchedule from "./AddSchedule";
 import type { moduleItem } from "./AddSchedule";
