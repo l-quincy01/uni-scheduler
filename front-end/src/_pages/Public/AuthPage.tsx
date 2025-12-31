@@ -10,12 +10,6 @@ export default function AuthPage() {
 
   return (
     <div className="relative container flex-1 shrink-0 items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      {/* <Button
-        onClick={() => setShowlogin((p) => !p)}
-        className="absolute top-4 right-4 md:top-8 md:right-8"
-      >
-        {showLogin ? <span>Sign Up</span> : <span>Login</span>}
-      </Button> */}
       <div className="text-primary relative hidden h-full flex-col p-10 lg:flex dark:border-r rounded-r-md bg-accent">
         <div
           className="bg-primary/5 absolute inset-0 rounded-md "
@@ -49,7 +43,7 @@ export default function AuthPage() {
             </>
           ) : (
             <>
-              <UserAuthForm />
+              <UserAuthForm setShowLoginForm={() => setShowlogin(true)} />
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-background text-muted-foreground relative z-10 px-2">
                   Already Have An Account

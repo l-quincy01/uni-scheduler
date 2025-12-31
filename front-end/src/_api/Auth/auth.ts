@@ -16,7 +16,7 @@ export type LoginResponse = {
 const BASE = import.meta.env.VITE_AUTH_API_BASE as string;
 
 export async function registerUser(payload: RegisterPayload) {
-  const res = await fetch(`${BASE}/auth/register`, {
+  const res = await fetch(`${BASE}/auth/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

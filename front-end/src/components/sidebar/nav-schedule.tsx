@@ -48,7 +48,7 @@ export function NavSchedule({
       </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Link to={`${item.url}/${item.id}`}>
+          <Link to={`schedule/${item.id}`}>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={item.title}>
                 <span>{item.title}</span>

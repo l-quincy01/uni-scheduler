@@ -7,7 +7,7 @@ export async function connectMongo(): Promise<Mongoose> {
   if (connPromise) return connPromise;
 
   const uri = process.env.MONGODB_URI;
-  const dbName = process.env.MONGO_DB || "schedules";
+  const dbName = process.env.MONGO_DB || "uni_scheduler";
 
   if (!uri) {
     throw new Error("Missing MONGODB_URI");

@@ -6,44 +6,36 @@ import type { IScheduleInput } from "@/components/Calendar/modules/components/ca
 import { useParams } from "react-router";
 import { getModuleSchedule } from "@/_api/schedules.api";
 
-export default function ExamPage() {
+export default function ContentPage() {
   const [schedules, setSchedules] = useState<IScheduleInput[] | null>(null);
+  // const [examID, setExamID] = useState<string[]>() ;
   const [loading, setLoading] = useState(true);
 
-  const { id } = useParams<{ id: string }>();
-  const safeId = id ?? "";
+  const { scheduleId } = useParams<{ scheduleId: string }>();
+  const safeId = scheduleId ?? "";
 
   useEffect(() => {
     if (!safeId) return;
-
-    let ignore = false;
-    const ac = new AbortController();
 
     setLoading(true);
     setSchedules(null);
 
     (async () => {
       try {
-        const s = await getModuleSchedule(safeId, { signal: ac.signal } as any);
-        if (!ignore) setSchedules(s ?? []);
+        const scheduleData = await getModuleSchedule(safeId);
+        setSchedules(scheduleData ?? []);
       } catch {
-        if (!ignore) setSchedules([]);
+        setSchedules([]);
       } finally {
-        if (!ignore) setLoading(false);
+        setLoading(false);
       }
     })();
-
-    return () => {
-      ignore = true;
-      ac.abort();
-    };
   }, [safeId]);
 
   const boards = useMemo(
     () => scheduleToKanbanData({ schedules: schedules ?? [] }),
     [schedules]
   );
-  console.log("--------Schedules:" + schedules);
 
   return (
     <div>
@@ -52,7 +44,7 @@ export default function ExamPage() {
           Loading schedule…
         </div>
       ) : boards.length > 0 ? (
-        <Kanban key={safeId} boards={boards} />
+        <Kanban key={safeId} boards={boards} schedules={schedules} />
       ) : (
         <div className="flex flex-col items-center">
           <span className="text-xl font-semibold">No Schedule Found.</span>

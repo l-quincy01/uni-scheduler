@@ -11,7 +11,7 @@ export interface IEvent {
 }
 
 export interface ISchedule extends Document {
-  sqlUserId: number; // Links to SQL user
+  sqlUserId: number;
   title: string;
   timezone: string;
   events: IEvent[];
@@ -39,11 +39,11 @@ const ScheduleSchema = new Schema<ISchedule>(
     events: { type: [EventSubSchema], default: [] },
     exams: { type: [EventSubSchema], default: [] },
   },
-  { timestamps: true, collection: "schedules" }
+  { timestamps: true, collection: "user_schedules" }
 );
 
 ScheduleSchema.index({ sqlUserId: 1, createdAt: -1 });
 
 export const Schedule: Model<ISchedule> =
   mongoose.models.Schedule ||
-  mongoose.model<ISchedule>("Schedule", ScheduleSchema, "schedules");
+  mongoose.model<ISchedule>("Schedule", ScheduleSchema, "user_schedules");

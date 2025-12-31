@@ -28,7 +28,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
           const res = await fetch(
             `${import.meta.env.VITE_AUTH_API_BASE}/auth/me`,
-            { headers: { Authorization: `Bearer ${accessToken}` } }
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+              method: "POST",
+            }
           );
           if (res.ok) {
             const data = await res.json();

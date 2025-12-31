@@ -1,7 +1,7 @@
 import ProfileContent from "@/components/profile/components/profile-content";
 import ProfileHeader from "@/components/profile/components/profile-header";
 import { useEffect, useState } from "react";
-import { getUsers, type User } from "@/_api/Auth/users";
+import { getUser, type User } from "@/_api/Auth/users";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -11,7 +11,7 @@ export default function ProfilePage() {
     let mounted = true;
     (async () => {
       try {
-        const u = await getUsers();
+        const u = await getUser();
         if (mounted) setUser(u[0] ?? null);
       } catch {
         if (mounted) setUser(null);
@@ -26,20 +26,7 @@ export default function ProfilePage() {
 
   const name = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim() || "";
 
-  if (loading) {
-    return (
-      <div>
-        <ProfileHeader name={""} email={""} school={""} avatarUrl={""} />
-        <ProfileContent
-          firstName={""}
-          lastName={""}
-          email={""}
-          phone={""}
-          school={""}
-        />
-      </div>
-    );
-  }
+  if (!user) return null;
 
   return (
     <div>
@@ -47,9 +34,10 @@ export default function ProfilePage() {
         name={name}
         email={user?.email ?? ""}
         school={user?.school ?? ""}
-        avatarUrl={user?.avatarUrl ?? undefined}
+        avatarUrl={user?.avatarUrl ?? "https://i.redd.it/8ugv2z5fdj7f1.png"}
       />
       <ProfileContent
+        id={user?.sqlId ?? null}
         firstName={user?.firstName ?? ""}
         lastName={user?.lastName ?? ""}
         email={user?.email ?? ""}

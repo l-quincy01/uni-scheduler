@@ -1,37 +1,8 @@
-/**
- * ContentGrid Component
- *
- * - Displays a grid of content items in either "Card" or "Thumbnail" format.
- * - Provides click handling for each item via an optional callback.
- * - Supports customizable header text and variant display modes.
- * - Each item includes metadata such as title, description, date, and author.
- *
- * @author Quincy Pitsi
- * @version 1.0.0
- * @exports ContentGrid
- * @constructor
- * @this {React.FC<ContentGridProps>}
- * @param {ContentGridProps} props - Component props.
- * @returns {JSX.Element} A grid layout displaying content items.
- * @throws Will throw if `items` array is undefined or invalid.
- * @see ContentItem
- * @todo
- */
-
+import type { ExamSummary } from "@/types/exam.types";
 import { Link } from "react-router";
 
 type Variant = "Card" | "Thumbnail";
 
-/**
- * Represents an individual content item displayed in the grid.
- *
- * @property {string} id - Unique identifier for the content item.
- * @property {string} title - Title of the content item.
- * @property {string} [description] - Optional description of the content.
- * @property {string} [thumbnailURL] - Optional URL of a thumbnail image.
- * @property {string} date - Date associated with the content.
- * @property {string} author - Author of the content.
- */
 export interface ContentItem {
   id: string;
 
@@ -40,25 +11,17 @@ export interface ContentItem {
   thumbnailURL?: string;
 }
 
-/**
- * Props for the ContentGrid component.
- *
- * @property {ContentItem[]} items - Array of content items to display.
- * @property {(item: ContentItem) => void} [onCardClick] - Optional callback when a card is clicked.
- * @property {string} [headerText] - Optional header text (default: `"14 May 2026"`).
- * @property {Variant} [variant] - Display variant: `"Card"` or `"Thumbnail"` (default: `"Card"`).
- */
 interface ContentGridProps {
-  items: ContentItem[];
+  items: ExamSummary[];
   onCardClick?: (item: ContentItem) => void;
-  headerText?: string;
+
   variant?: Variant;
 }
 
 export default function ContentGrid({
   items,
   onCardClick,
-  headerText = "14 May 2026",
+
   variant = "Card",
 }: ContentGridProps) {
   const renderVariant = () => {
@@ -76,7 +39,7 @@ export default function ContentGrid({
 
       case "Thumbnail":
         return items.map((item, index) => (
-          <Link to={`${item.id}`}>
+          <Link to={`${item.id}/`}>
             <div
               key={index}
               onClick={() => onCardClick?.(item)}

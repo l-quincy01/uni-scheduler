@@ -1,38 +1,17 @@
-/**
- * Kanban Component
- *
- * - Provides a tabbed interface for switching between multiple Kanban boards.
- * - Accepts an array of board objects (each with `title` and `data`).
- * - Renders the selected board’s corresponding `KanbanBoard`.
- *
- * @author Quincy
- * @version 1.1.0
- * @exports Kanban
- * @constructor
- * @this {React.FC<KanbanProps>}
- * @param {KanbanProps} props - Component props.
- * @returns {JSX.Element} A tabbed Kanban board container.
- * @throws Will throw if no data is provided for the selected tab.
- * @see KanbanBoard
- */
-
 import React, { useState } from "react";
 import type { KanbanColumnData } from "@/components/Dashboard/Kanban/KanbanBoard";
 import KanbanBoard from "@/components/Dashboard/Kanban/KanbanBoard";
+import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
 
-/**
- * Props for the Kanban component.
- *
- * @property {{ title: string; data: KanbanColumnData[] }[]} boards - Array of board objects.
- */
 export interface KanbanProps {
   boards: {
     title?: string;
     data: KanbanColumnData[];
   }[];
+  schedules: IScheduleInput[] | null;
 }
 
-export default function Kanban({ boards }: KanbanProps) {
+export default function Kanban({ boards, schedules }: KanbanProps) {
   if (!boards.length) {
     throw new Error("No boards provided to Kanban component.");
   }
@@ -67,9 +46,13 @@ export default function Kanban({ boards }: KanbanProps) {
 
       {/* Selected board */}
       {boards.map(
-        (board) =>
+        (board, index) =>
           board.title === selectedTab && (
-            <KanbanBoard key={board.title} columns={board.data} />
+            <KanbanBoard
+              key={index}
+              columns={board.data}
+              scheduleExams={schedules?.[index].exams}
+            />
           )
       )}
     </div>

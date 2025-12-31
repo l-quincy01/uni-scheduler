@@ -9,81 +9,20 @@ import { toast } from "sonner";
 import { getModuleSchedule } from "@/_api/schedules.api";
 import { generateExam } from "@/_api/exams.api";
 
-type EventOption = { id: string; title: string; when?: string };
-
 export default function AddExamModal() {
-  const { id: scheduleId, groupKey } = useParams<{
-    id: string;
-    groupKey?: string;
+  const { scheduleId, examForeignKey } = useParams<{
+    scheduleId: string;
+    examForeignKey: string;
   }>();
   const navigate = useNavigate();
   const [files, setFiles] = useState<File[]>([]);
   const [title, setTitle] = useState("");
   const [validationError, setValidationError] = useState("");
-  const [eventOptions, setEventOptions] = useState<EventOption[]>([]);
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+
   const [submitting, setSubmitting] = useState(false);
   const [loadingEvents, setLoadingEvents] = useState(false);
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      if (!scheduleId) return;
-      setLoadingEvents(true);
-      try {
-        const arr = await getModuleSchedule(scheduleId);
-        const schedule = arr[0];
-        if (!schedule) return;
-        const toOpt = (e: any): EventOption => ({
-          id: String(e._id || e.id || ""),
-          title: String(e.title || "Untitled"),
-          when: e.startDate
-            ? new Date(e.startDate).toLocaleString()
-            : undefined,
-        });
-        const opts: EventOption[] = [
-          ...(schedule.events || []).map(toOpt),
-          ...(schedule.exams || []).map(toOpt),
-        ];
-        if (mounted) setEventOptions(opts);
-
-        const subjectFromEventTitle = (t: string) => {
-          const m = String(t).match(
-            /^(?:\s*(?:Study|Exam):\s*)?(.+?)(?:\s*\(Session\s*\d+\)\s*)?$/i
-          );
-          if (m) return m[1].trim();
-          return String(t)
-            .replace(/^(?:Study|Exam):\s*/i, "")
-            .replace(/\s*\(Session\s*\d+\)\s*$/i, "")
-            .trim();
-        };
-        const slugify = (s: string) =>
-          s
-            .toLowerCase()
-            .normalize("NFKD")
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
-
-        let autoId: string | null = null;
-        if (groupKey) {
-          const match = opts.find(
-            (o) => slugify(subjectFromEventTitle(o.title)) === groupKey
-          );
-          if (match) autoId = match.id;
-        }
-        if (!autoId && opts.length > 0) {
-          autoId = opts[0].id;
-        }
-        if (mounted) setSelectedEventId(autoId);
-      } catch {
-      } finally {
-        if (mounted) setLoadingEvents(false);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [scheduleId, groupKey]);
+  console.log("Schedule:", scheduleId, "Exam ID", examForeignKey);
 
   const handleFileUpload = (uploaded: File[]) => {
     setFiles((prev) => {
@@ -104,10 +43,7 @@ export default function AddExamModal() {
       setValidationError("Missing schedule context.");
       return;
     }
-    if (!selectedEventId) {
-      setValidationError("No matching event found for this group.");
-      return;
-    }
+
     if (files.length === 0) {
       setValidationError("Please upload at least 1 file.");
       return;
@@ -117,11 +53,10 @@ export default function AddExamModal() {
     setSubmitting(true);
 
     const examGenerationPromise = generateExam({
-      scheduleId,
-      eventId: selectedEventId,
+      scheduleId: scheduleId!,
+      examForeignKey: examForeignKey!,
       files,
       title: title.trim() || undefined,
-      groupKey: groupKey || undefined,
     });
 
     toast.promise(examGenerationPromise, {
@@ -129,18 +64,6 @@ export default function AddExamModal() {
       success: (res) => (
         <div className="flex items-center gap-2">
           <span>Exam generated successfully</span>
-          <Button
-            onClick={() =>
-              navigate(
-                res?.groupKey
-                  ? `/exam/${res?.scheduleId}/content/${res.groupKey}`
-                  : `/exam/${res?.scheduleId}/content`
-              )
-            }
-            className="ml-2 underline text-blue-500 hover:text-blue-600"
-          >
-            View
-          </Button>
         </div>
       ),
       error: (err) =>
