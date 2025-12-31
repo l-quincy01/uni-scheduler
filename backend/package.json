@@ -1,12 +1,25 @@
 {
+  "type": "module",
+  "imports": {
+    "#auth": "./src/auth/*",
+    "#controllers": "./src/controllers/*",
+    "#db": "./src/db/*",
+    "#middleware": "./src/middleware/*",
+    "#models": "./src/models/*",
+    "#routes": "./src/routes/*",
+    "#services": "./src/services/*",
+    "#utils": "./src/utils/*",
+    "#validations": "./src/validations/*"
+  },
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec tsx ./src/server.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.15.0",
+    "@types/pg": "^8.16.0",
     "argon2": "^0.44.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -14,16 +27,17 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "openai": "^5.20.2",
-    "prisma": "^6.15.0",
+    "prisma": "^6.19.1",
     "uuid": "^12.0.0",
-    "zod": "^4.1.5"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
+    "@types/node": "^25.0.3",
     "nodemon": "^3.1.10",
-    "tsx": "^4.20.5"
+    "tsx": "^4.21.0"
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 function authHeader() {
@@ -5,88 +6,88 @@ function authHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-import type { ExamDetail, ExamSummary } from "@/types/exam.types";
-
 export async function generateExam(params: {
   scheduleId: string;
-  eventId: string;
+  examForeignKey: string;
   files: File[];
   title?: string;
-  groupKey?: string;
-}): Promise<{
-  examId: string;
-  scheduleId: string;
-  eventId: string;
-  groupKey?: string;
-  groupTitle?: string;
-} | null> {
+}) {
   const fd = new FormData();
-  fd.append("scheduleId", params.scheduleId);
-  fd.append("eventId", params.eventId);
-  if (params.title) fd.append("title", params.title);
-  if (params.groupKey) fd.append("groupKey", params.groupKey);
-  for (const f of params.files) fd.append("files", f);
 
-  const res = await fetch(`${API_BASE}/api/generate-exam`, {
+  fd.append("scheduleId", params.scheduleId);
+  fd.append("examForeignKey ", params.examForeignKey);
+
+  if (params.title) fd.append("title", params.title);
+
+  for (const f of params.files) {
+    fd.append("files", f);
+  }
+
+  const res = await fetch(`${API_BASE}/api/exam`, {
     method: "POST",
-    headers: { ...authHeader() },
+    headers: {
+      ...authHeader(),
+    },
     body: fd,
   });
+
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Failed to generate exam");
+
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to generate exam");
+  }
+
   return data as {
-    examId: string;
+    examForeignKey: string;
     scheduleId: string;
-    eventId: string;
-    groupKey?: string;
-    groupTitle?: string;
   };
 }
 
-export async function getAllExams(opts?: {
-  scheduleId?: string;
-  groupKey?: string;
-  signal?: AbortSignal;
-}): Promise<ExamSummary[]> {
-  const url = new URL(`${API_BASE}/api/exams`);
-  if (opts?.scheduleId) url.searchParams.set("scheduleId", opts.scheduleId);
-  if (opts?.groupKey) url.searchParams.set("groupKey", opts.groupKey);
-  const res = await fetch(url.toString(), {
+export async function getExamByForeignkey(examForeignKey: string) {
+  if (!examForeignKey) throw new Error("Exam Foreign Key is Empty");
+
+  const res = await fetch(`${API_BASE}/api/exam/by-key/${examForeignKey}`, {
+    method: "GET",
     headers: { ...authHeader() },
-    signal: opts?.signal,
   });
-  if (!res.ok) return [];
+
+  if (!res.ok) throw new Error("Response failed");
+
   const data = await res.json();
-  return (data?.exams || []) as ExamSummary[];
+
+  return data.exams as Array<{
+    id: string;
+    scheduleId: string;
+    examForeignKey: string;
+    title: string;
+    createdAt: Date;
+    questions: any;
+  }>;
 }
 
-export async function getExamsForSchedule(
-  scheduleId: string,
-  opts?: { groupKey?: string; signal?: AbortSignal }
-): Promise<ExamSummary[]> {
-  if (!scheduleId) return [];
-  const url = new URL(`${API_BASE}/api/schedules/${scheduleId}/exams`);
-  if (opts?.groupKey) url.searchParams.set("groupKey", opts.groupKey);
-  const res = await fetch(url.toString(), {
-    headers: { ...authHeader() },
-    signal: opts?.signal,
-  });
-  if (!res.ok) return [];
-  const data = await res.json();
-  const exams = (data?.exams || []) as ExamSummary[];
-  return exams;
-}
+export async function getExamById(examId: string) {
+  if (!examId) throw new Error("Exam id is required");
 
-export async function getExamById(
-  examId: string,
-  opts?: { signal?: AbortSignal }
-): Promise<ExamDetail | null> {
-  if (!examId) return null;
-  const res = await fetch(`${API_BASE}/api/exams/${examId}`, {
-    headers: { ...authHeader() },
-    signal: opts?.signal,
+  const res = await fetch(`${API_BASE}/api/exam/${examId}`, {
+    method: "GET",
+    headers: {
+      ...authHeader(),
+    },
   });
-  if (!res.ok) return null;
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error || "Failed to fetch exam");
+  }
+
   const data = await res.json();
-  return (data?.exam as ExamDetail) ?? null;
+
+  return data.exam as {
+    id: string;
+    scheduleId: string | null;
+    examForeignKey: string | null;
+    title: string;
+    createdAt: Date;
+    questions: any;
+  };
 }

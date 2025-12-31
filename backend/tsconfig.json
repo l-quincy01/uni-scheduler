@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+        "moduleResolution": "node",
+
+    "rootDir": "src",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "paths": {
+      "#auth/*": ["src/auth/*"],
+      "#controllers/*": ["src/controllers/*"],
+      "#db/*": ["src/db/*"],
+      "#middleware/*": ["src/middleware/*"],
+      "#models/*": ["src/models/*"],
+      "#routes/*": ["src/routes/*"],
+      "#services/*": ["src/services/*"],
+      "#utils/*": ["src/utils/*"],
+      "#validations/*": ["src/validations/*"]
+    }
+  },
+
+  "include": ["src"]
+}

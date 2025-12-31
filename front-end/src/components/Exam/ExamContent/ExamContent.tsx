@@ -8,33 +8,28 @@ import { CalendarSkeleton } from "@/components/Calendar/modules/components/calen
 import { Calendar } from "@/components/Calendar/modules/components/calendar/calendar";
 import ExamContentPanel from "./ExamContentPanel";
 import { getAllExams } from "@/_api/exams.api";
+import type { ExamSummary } from "@/types/exam.types";
 
 export default function ExamContent() {
+  const { scheduleId, groupKey } = useParams();
+
   const { isCourseCalendarOpen } = useCourseCalendar();
-  const [practiceExams, setPracticeExams] = useState<
-    { id: string; title: string }[]
-  >([]);
-  const { id: scheduleId, groupKey } = useParams<{
-    id: string;
-    groupKey: string;
-  }>();
+
+  const [examObject, setExamObject] = useState<ExamSummary[]>();
 
   useEffect(() => {
     const ac = new AbortController();
     (async () => {
       try {
-        const exams = await getAllExams({
+        const examData = await getAllExams({
           scheduleId: scheduleId ?? undefined,
           groupKey: groupKey ?? undefined,
           signal: ac.signal,
         });
-        const items = (exams || []).map((ex) => ({
-          id: ex.id,
-          title: ex.title,
-        }));
-        setPracticeExams(items);
-      } catch {
-        setPracticeExams([]);
+
+        setExamObject(examData);
+      } catch (e: any) {
+        console.log("Error getting exam object:", e);
       }
     })();
     return () => ac.abort();
@@ -50,7 +45,7 @@ export default function ExamContent() {
           </Suspense>
         ) : (
           <>
-            {practiceExams.length === 0 ? (
+            {examObject ? (
               <div className="flex flex-col items-center">
                 <span className="text-xl font-semibold">No Exams Created.</span>
                 <span className="text-md text-muted-foreground">
@@ -58,7 +53,7 @@ export default function ExamContent() {
                 </span>
               </div>
             ) : (
-              <ContentGrid variant="Thumbnail" items={practiceExams} />
+              <ContentGrid variant="Thumbnail" items={examObject!} />
             )}
           </>
         )}

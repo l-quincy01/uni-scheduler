@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { toast } from "sonner";
 import { registerUser } from "@/_api/Auth/auth";
 import { useState } from "react";
 
@@ -14,8 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export function UserAuthForm() {
+interface props {
+  setShowLoginForm: () => void;
+}
+export function UserAuthForm({ setShowLoginForm }: props) {
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -63,8 +65,20 @@ export function UserAuthForm() {
         school: form.school,
       });
       console.log("User registered:", userData);
+      setShowLoginForm();
+      toast.success("Account created successfully!");
+      setForm({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+        phone: "",
+        school: "",
+      });
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

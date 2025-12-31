@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AddSchedule from "./AddSchedule";
 import type { moduleItem } from "./AddSchedule";
-const API_URL = "http://localhost:4011";
+import { fetchModules } from "@/_api/modules.api";
+const API_URL = "http://localhost:4000";
 
 export default function AddScheduleLoader() {
   const [modules, setModules] = useState<moduleItem[]>([]);
@@ -10,20 +11,18 @@ export default function AddScheduleLoader() {
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/modules`, {
-          headers: { Accept: "application/json" },
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as moduleItem[];
+
+    fetchModules()
+      .then((data) => {
         if (alive) setModules(data);
-      } catch (e: any) {
+      })
+      .catch((e: any) => {
         if (alive) setErr(e.message || "Failed to load modules");
-      } finally {
+      })
+      .finally(() => {
         if (alive) setLoading(false);
-      }
-    })();
+      });
+
     return () => {
       alive = false;
     };

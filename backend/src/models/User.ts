@@ -1,9 +1,6 @@
 import { mongoose } from "../db/mongo";
 import { Schema, Document, Model } from "mongoose";
 
-const collection = process.env.MONGO_COLLECTION || "user_schedules";
-
-//interface
 export interface IUserProfile extends Document {
   sqlUserId: number;
   firstName?: string | null;
@@ -20,24 +17,32 @@ export interface IUserProfile extends Document {
 
 const UserProfileSchema = new Schema<IUserProfile>(
   {
-    sqlUserId: { type: Number, required: true, unique: true, index: true },
+    sqlUserId: {
+      type: Number,
+      required: true,
+      unique: true,
+      index: true,
+    },
 
-    firstName: { type: String, default: null, trim: true },
-    lastName: { type: String, default: null, trim: true },
-    email: { type: String, index: true, trim: true, lowercase: true },
+    firstName: { type: String, trim: true, default: null },
+    lastName: { type: String, trim: true, default: null },
+    email: { type: String, trim: true, lowercase: true, index: true },
     phone: { type: String, default: null },
     school: { type: String, default: null },
     avatarUrl: { type: String, default: null },
   },
-  { timestamps: true, collection }
+  {
+    timestamps: true,
+    collection: "users",
+  }
 );
 
-UserProfileSchema.virtual("name").get(function (this: IUserProfile) {
-  return `${this.firstName || ""} ${this.lastName || ""}`.trim();
+UserProfileSchema.virtual("name").get(function () {
+  return `${this.firstName ?? ""} ${this.lastName ?? ""}`.trim();
 });
 
 UserProfileSchema.set("toJSON", { virtuals: true });
 
 export const UserProfile: Model<IUserProfile> =
-  mongoose.models.UserProfile ||
-  mongoose.model<IUserProfile>("UserProfile", UserProfileSchema, collection);
+  mongoose.models.UserProfile ??
+  mongoose.model<IUserProfile>("UserProfile", UserProfileSchema);

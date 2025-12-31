@@ -61,7 +61,7 @@ export type ScheduleInput = {
   schedules: ScheduleBlock[];
 };
 
-type KanbanItem = {
+export type KanbanItem = {
   id: number; // index within items[]
   title: string;
   description: string;
@@ -70,10 +70,10 @@ type KanbanItem = {
   eventId?: string; // underlying schedule event
 };
 
-type KanbanGroup = {
+export type KanbanGroup = {
   id: string; // stable group key (subject slug)
   title: string; // "Study: <Subject>"
-  colorDot: string; // Tailwind class
+  colorDot: string;
   items: KanbanItem[];
 };
 
@@ -82,9 +82,6 @@ type KanbanBoard = {
   data: KanbanGroup[];
 };
 
-/**
- * Convert schedule -> KanbanData with index-based IDs.
- */
 export function scheduleToKanbanData(schedule: ScheduleInput): KanbanBoard[] {
   if (!schedule?.schedules?.length) return [];
 

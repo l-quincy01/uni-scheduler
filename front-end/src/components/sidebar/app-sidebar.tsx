@@ -18,7 +18,7 @@ import { NavUser } from "./nav-user";
 import { Link } from "react-router";
 import { NavMain } from "./nav-main";
 import type { User } from "@/_api/Auth/users";
-import { getUsers } from "@/_api/Auth/users";
+import { getUser } from "@/_api/Auth/users";
 import { getNavSchedules } from "@/_api/schedules.api";
 
 interface navSchedule {
@@ -60,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     let mounted = true;
     (async () => {
       try {
-        const u = await getUsers();
+        const u = await getUser();
         const s = await getNavSchedules();
 
         if (mounted) {
@@ -83,8 +83,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     email: user?.email ?? "",
     avatar: user?.avatarUrl ?? "",
   };
-
-  // navSchedules is derived from API; if empty, no schedules will render
 
   return (
     <Sidebar collapsible="icon" {...props}>

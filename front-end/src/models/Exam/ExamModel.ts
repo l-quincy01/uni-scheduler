@@ -1,6 +1,6 @@
 import type { Questions } from "./ExamQuestionsModel";
 
-interface examData {
+export interface examData {
   id: string;
   title: string;
   examQuestions: Questions[];

@@ -4,3 +4,6 @@ node_modules
 
 /generated/prisma
 /uploads
+/src/generated/prisma
+
+/src/generated/prisma

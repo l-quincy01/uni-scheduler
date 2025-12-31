@@ -2,19 +2,19 @@
 import { Route, Routes } from "react-router";
 import { ThemeProvider } from "./providers/theme/theme-provider";
 
-import DashboardPage from "@/_pages/ProtectedShell/Dashboard/DashboardPage";
-import CalendarPage from "@/_pages/ProtectedShell/Calendar/CalendarPage";
-import ProfilePage from "@/_pages/ProtectedShell/Profile/ProfilePage";
-import ExamPage from "@/_pages/ProtectedShell/Exam/ExamPage";
+import DashboardPage from "@/_pages/ProtectedShell/dashboard/DashboardPage";
+import CalendarPage from "@/_pages/ProtectedShell/calendar/CalendarPage";
+import ProfilePage from "@/_pages/ProtectedShell/profile/ProfilePage";
 
-import ExamContent from "@/components/Exam/ExamContent/ExamContent";
-import Index from "@/_pages/ProtectedShell/Exam/Index";
-import ExamContentView from "@/_pages/ProtectedShell/Exam/content/ExamContentView";
 import { GuestOnly, RequireAuth } from "./Auth/RouteGuard";
 import ProtectedAppShell from "./Auth/ProtectedShell";
 import { AuthProvider } from "./Auth/AuthContext";
 import IndexPage from "@/_pages/Public/IndexPage";
 import AuthPage from "@/_pages/Public/AuthPage";
+import ContentPage from "@/_pages/ProtectedShell/content/ContentPage";
+import ContentIndex from "@/_pages/ProtectedShell/content/Index";
+import ContentGridPage from "@/_pages/ProtectedShell/content/ContentGridPage";
+import ExamContentView from "@/_pages/ProtectedShell/content/examView/ExamContentView";
 
 export default function App() {
   return (
@@ -34,12 +34,11 @@ export default function App() {
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/profile" element={<ProfilePage />} />
 
-              <Route path="exam/:id" element={<Index />}>
-                <Route index element={<ExamPage />} />
-
-                <Route path="content/:groupKey" element={<ExamContent />} />
+              <Route path="schedule/:scheduleId" element={<ContentIndex />}>
+                <Route index element={<ContentPage />} />
+                <Route path=":examForeignKey" element={<ContentGridPage />} />
                 <Route
-                  path="content/:groupKey/:id"
+                  path=":examForeignKey/:contentID"
                   element={<ExamContentView />}
                 />
               </Route>

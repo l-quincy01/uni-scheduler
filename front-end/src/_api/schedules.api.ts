@@ -6,9 +6,11 @@ function authHeader() {
 }
 
 import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
+import type { createSchedule, NavSchedule } from "@/types/schedule.types";
 
 export async function getAllSchedules(): Promise<IScheduleInput[]> {
   const res = await fetch(`${API_BASE}/api/schedules`, {
+    method: "GET",
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];
@@ -21,6 +23,7 @@ export async function getModuleSchedule(
 ): Promise<IScheduleInput[]> {
   if (!moduleID) return [];
   const res = await fetch(`${API_BASE}/api/schedules/${moduleID}`, {
+    method: "GET",
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];
@@ -29,18 +32,11 @@ export async function getModuleSchedule(
   return schedule ? [schedule] : [];
 }
 
-/** -------------------------------------------------------------------
- * Sidebar-friendly version of schedules for navigation menus
- * ------------------------------------------------------------------*/
-export type NavSchedule = {
-  id: string;
-  title: string;
-  url: "/exam";
-  isActive: boolean;
-};
+//for side nav
 
 export async function getNavSchedules(): Promise<NavSchedule[]> {
   const res = await fetch(`${API_BASE}/api/schedules`, {
+    method: "GET",
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];
@@ -61,4 +57,25 @@ export async function getNavSchedules(): Promise<NavSchedule[]> {
 
   if (items.length > 0) items[0].isActive = true;
   return items;
+}
+
+export async function createSchedule(
+  scheduleTitle: string,
+  selectedModules: any
+): Promise<createSchedule> {
+  const req_data = { scheduleTitle, selectedModules };
+
+  const res = await fetch(`${API_BASE}/api/schedules/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeader() },
+    body: JSON.stringify(req_data),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to generate schedule");
+  }
+
+  return data as createSchedule;
 }

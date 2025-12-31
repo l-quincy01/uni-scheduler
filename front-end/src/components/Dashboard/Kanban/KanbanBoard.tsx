@@ -1,25 +1,3 @@
-/**
- * KanbanBoard Component
- *
- * - Renders a Kanban board with multiple columns and items.
- * - Each column displays a title, optional color indicator, and item count.
- * - Items within columns can include type badges, descriptions, due dates, and priorities.
- * - Uses `KanbanColumn` for layout structure and `Badge` for item labeling.
- *
- * @author Quincy Pitsi
- * @version 1.0.0
- * @exports KanbanBoard
- * @constructor
- * @this {React.FC<KanbanBoardProps>}
- * @param {KanbanBoardProps} props - Component props.
- * @returns {JSX.Element} A Kanban board containing columns and items.
- * @throws Will throw if `columns` data is malformed or missing required properties.
- * @see KanbanColumn
- * @see KanbanItem
- * @see KanbanColumnData
- * @todo
- */
-
 import { Badge } from "@/components/ui/badge";
 import { KanbanColumn } from "@/components/Dashboard/Kanban/KanbanColumn";
 
@@ -30,34 +8,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-/**
- * Represents an item within a Kanban column.
- *
- * @property {string | number} id - Unique identifier for the item.
- * @property {string} title - Title of the task or item.
- * @property {string} [description] - Optional description providing more context.
- * @property {string} [type] - Optional type/category displayed as a badge.
- * @property {string} [date] - Optional due date of the item (ISO string).
- * @property {string} [priority] - Optional priority level displayed with styled badge.
- */
-export interface KanbanItem {
-  id: string | number;
-  title: string;
-  description?: string;
-  type?: string;
-  date?: string;
-  priority?: string;
-}
-
-/**
- * Represents data for a Kanban column.
- *
- * @property {string} id - Unique identifier for the column.
- * @property {string} title - Title of the column.
- * @property {string} [colorDot] - Optional Tailwind class for a colored dot indicator.
- * @property {KanbanItem[]} items - List of items belonging to the column.
- */
+import type { KanbanItem } from "@/utils/scheduleToKanban";
+import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
 
 export interface KanbanColumnData {
   id: string;
@@ -66,16 +18,15 @@ export interface KanbanColumnData {
   items: KanbanItem[];
 }
 
-/**
- * Props for the KanbanBoard component.
- *
- * @property {KanbanColumnData[]} columns - Array of column data to render in the board.
- */
 export interface KanbanBoardProps {
   columns: KanbanColumnData[];
+  scheduleExams?: any;
 }
 
-export default function KanbanBoard({ columns }: KanbanBoardProps) {
+export default function KanbanBoard({
+  columns,
+  scheduleExams,
+}: KanbanBoardProps) {
   return (
     <div className="flex flex-row gap-6 overflow-x-auto ">
       {columns.map((column, index) => (
@@ -85,6 +36,7 @@ export default function KanbanBoard({ columns }: KanbanBoardProps) {
           title={column.title}
           colorDot={column.colorDot}
           count={column.items.length}
+          examForeignKey={scheduleExams?.[index].id}
         >
           {column.items.map((item) => (
             <li

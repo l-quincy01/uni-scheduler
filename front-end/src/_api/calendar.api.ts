@@ -8,7 +8,7 @@ function authHeader() {
 }
 
 export async function getEvents(): Promise<CalendarEvent[]> {
-  const res = await fetch(`${API_BASE}/api/calendar/events`, {
+  const res = await fetch(`${API_BASE}/api/calendar`, {
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];
@@ -16,7 +16,7 @@ export async function getEvents(): Promise<CalendarEvent[]> {
 }
 
 export async function getUsers(): Promise<CalendarUser[]> {
-  const res = await fetch(`${API_BASE}/profile/me`, {
+  const res = await fetch(`${API_BASE}/auth/profile/me`, {
     headers: { ...authHeader() },
   });
   if (!res.ok) return [];
