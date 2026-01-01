@@ -1,11 +1,3 @@
-export type RegisterPayload = {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  school: string;
-};
 export type LoginPayload = { email: string; password: string };
 export type LoginResponse = {
   user: { id: number; email: string };
@@ -14,35 +6,6 @@ export type LoginResponse = {
 };
 
 const BASE = import.meta.env.VITE_AUTH_API_BASE as string;
-
-export async function registerUser(payload: RegisterPayload) {
-  const res = await fetch(`${BASE}/auth/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await res.json();
-  if (!res.ok) {
-    const msg =
-      data?.error?.[0]?.message ||
-      data?.error?.message ||
-      data?.error ||
-      "Registration failed";
-    throw new Error(msg);
-  }
-  return data as {
-    user: {
-      id: number;
-      email: string;
-      firstName: string;
-      lastName: string;
-      phone: string;
-    };
-    accessToken: string;
-    refreshToken: string;
-  };
-}
 
 export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
   const res = await fetch(`${BASE}/auth/login`, {

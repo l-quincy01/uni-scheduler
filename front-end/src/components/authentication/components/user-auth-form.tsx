@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { registerUser } from "@/_api/Auth/auth";
+
 import { useState } from "react";
 
 import {
@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { registerUser } from "@/_api/Auth/users";
 interface props {
   setShowLoginForm: () => void;
 }

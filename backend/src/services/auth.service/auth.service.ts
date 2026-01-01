@@ -6,12 +6,15 @@ import {
   getUserProfile,
   updateSqlUser,
   upsertMongoUserProfile,
-} from "#auth/auth.service/user.service.js";
+} from "#services/user.service/user.service.js";
 import { UserProfile } from "#models/User.js";
 import { Schedule } from "#models/Schedule.js";
 import { Exam } from "#models/Exam.js";
 import { addDays } from "../../utils/helpers.js";
-import { signAccessToken, signRefreshToken } from "../auth.utils/auth.utils.js";
+import {
+  signAccessToken,
+  signRefreshToken,
+} from "../../utils/auth.utils/auth.utils.js";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();

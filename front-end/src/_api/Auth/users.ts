@@ -25,8 +25,46 @@ type UpdateUserPayload = {
   avatarUrl?: string | null;
 };
 
+export type RegisterPayload = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  school: string;
+};
+
+export async function registerUser(payload: RegisterPayload) {
+  const res = await fetch(`${API_BASE}/api/users`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    const msg =
+      data?.error?.[0]?.message ||
+      data?.error?.message ||
+      data?.error ||
+      "Registration failed";
+    throw new Error(msg);
+  }
+  return data as {
+    user: {
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+      phone: string;
+    };
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
 export async function getUser(): Promise<User[]> {
-  const res = await fetch(`${API_BASE}/auth/users/:id`, {
+  const res = await fetch(`${API_BASE}/api/users/:id`, {
     headers: { ...authHeader() },
     method: "GET",
   });
@@ -51,7 +89,7 @@ export async function updateUser(
   id: number,
   payload: UpdateUserPayload
 ): Promise<User> {
-  const res = await fetch(`${API_BASE}/auth/users/${id}`, {
+  const res = await fetch(`${API_BASE}/api/users/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -70,7 +108,7 @@ export async function updateUser(
 }
 
 export async function deleteUser(id: number): Promise<boolean> {
-  const res = await fetch(`${API_BASE}/auth/users/${id}`, {
+  const res = await fetch(`${API_BASE}/api/users/${id}`, {
     method: "DELETE",
     headers: {
       ...authHeader(),
