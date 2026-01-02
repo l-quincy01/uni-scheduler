@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useContentPanel } from "@/_app/Context/ContentPanelContext";
+import { useContentPanel } from "@/app/Context/ContentPanelContext";
 import Logout from "../authentication/logout";
 
 export default function SiteHeader() {

@@ -21,7 +21,7 @@ import { Button } from "../../ui/button";
 import { CalendarFold, X } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
-import { createSchedule } from "@/_api/schedules.api";
+import { createSchedule } from "@/api/schedules.api/schedules.api";
 
 export interface exams {
   title: string;

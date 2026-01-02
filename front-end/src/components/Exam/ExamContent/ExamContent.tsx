@@ -3,11 +3,11 @@ import ContentGrid from "@/components/Exam/ContentGrid";
 import { Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-import { useCourseCalendar } from "@/_app/Context/CourseCalendarContext";
+import { useCourseCalendar } from "@/app/Context/CourseCalendarContext";
 import { CalendarSkeleton } from "@/components/Calendar/modules/components/calendar/skeletons/calendar-skeleton";
 import { Calendar } from "@/components/Calendar/modules/components/calendar/calendar";
 import ExamContentPanel from "./ExamContentPanel";
-import { getAllExams } from "@/_api/exams.api";
+import { getAllExams } from "@/api/exam.api/exams.api";
 import type { ExamSummary } from "@/types/exam.types";
 
 export default function ExamContent() {

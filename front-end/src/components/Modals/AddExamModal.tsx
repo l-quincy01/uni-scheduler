@@ -6,8 +6,8 @@ import { LoaderIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 
 import { toast } from "sonner";
-import { getModuleSchedule } from "@/_api/schedules.api";
-import { generateExam } from "@/_api/exams.api";
+import { getModuleSchedule } from "@/api/schedules.api/schedules.api";
+import { generateExam } from "@/api/exam.api/exams.api";
 
 export default function AddExamModal() {
   const { scheduleId, examForeignKey } = useParams<{

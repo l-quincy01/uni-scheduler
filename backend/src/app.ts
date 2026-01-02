@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 
 import authRouter from "#routes/auth.routes/auth.routes.js";
-import examsRouter from "#routes/examRoutes.js";
-import schedulesRouter from "#routes/schedulesRoutes.js";
-import calendarRouter from "#routes/calendarRoutes.js";
-import moduleRouter from "#routes/moduleRoutes.js";
+import examsRouter from "#routes/exam.routes/examRoutes.js";
+import schedulesRouter from "#routes/schedule.routes/schedulesRoutes";
+import calendarRouter from "#routes/calendar.routes/calendarRoutes.js";
+import moduleRouter from "#routes/modules.routes/moduleRoutes";
 import userRouter from "#routes/user.routes/user.routes";
 
 export function createApp() {

@@ -1,4 +1,4 @@
-import { useContentPanel } from "@/_app/Context/ContentPanelContext";
+import { useContentPanel } from "@/app/Context/ContentPanelContext";
 import React, { useState } from "react";
 import { Tabs } from "@/components/ui/vercel-tabs";
 import pdfIcon from "assets/Icons/ContentPanel/pdf_icon.png";

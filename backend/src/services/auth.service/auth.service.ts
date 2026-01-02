@@ -229,7 +229,5 @@ export async function logout(refreshToken: string) {
     await prisma.refreshToken.deleteMany({
       where: { userId: payload.sub },
     });
-  } catch {
-    // swallow errors — logout is idempotent
-  }
+  } catch {}
 }

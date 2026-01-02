@@ -19,7 +19,7 @@ import {
   ProfileSchema,
   type ProfileForm,
 } from "@/validations/profile.validations";
-import { deleteUser, updateUser } from "@/_api/Auth/users";
+import { deleteUser, updateUser } from "@/api/Auth/users";
 
 interface ProfileContentProps {
   id: number;

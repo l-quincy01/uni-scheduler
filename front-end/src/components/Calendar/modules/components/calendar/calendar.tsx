@@ -5,7 +5,7 @@ import { DndProvider } from "@/components/Calendar/modules/components/calendar/c
 import { CalendarHeader } from "@/components/Calendar/modules/components/calendar/header/calendar-header";
 
 import type { IScheduleInput } from "@/components/Calendar/modules/components/calendar/interfaces";
-import { getAllSchedules } from "@/_api/schedules.api";
+import { getAllSchedules } from "@/api/schedules.api/schedules.api";
 
 export function Calendar() {
   const [schedules, setSchedules] = useState<IScheduleInput[] | null>(null);

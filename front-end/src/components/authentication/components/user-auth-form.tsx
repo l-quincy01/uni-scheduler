@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { registerUser } from "@/_api/Auth/users";
+import { registerUser } from "@/api/Auth/users";
 interface props {
   setShowLoginForm: () => void;
 }
@@ -65,7 +65,7 @@ export function UserAuthForm({ setShowLoginForm }: props) {
         phone: form.phone,
         school: form.school,
       });
-      console.log("User registered:", userData);
+
       setShowLoginForm();
       toast.success("Account created successfully!");
       setForm({

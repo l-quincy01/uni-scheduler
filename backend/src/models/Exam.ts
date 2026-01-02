@@ -1,4 +1,4 @@
-import { mongoose } from "../db/mongo";
+import { mongoose } from "#db/mongo";
 import { Schedule } from "./Schedule";
 import { Schema, Document, Model } from "mongoose";
 
@@ -12,7 +12,6 @@ export interface IExam extends Document {
   updatedAt: Date;
 }
 
-//Schema
 const ExamSchema = new Schema<IExam>(
   {
     // owner

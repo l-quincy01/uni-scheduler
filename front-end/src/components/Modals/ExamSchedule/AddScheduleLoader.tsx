@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AddSchedule from "./AddSchedule";
 import type { moduleItem } from "./AddSchedule";
-import { fetchModules } from "@/_api/modules.api";
+import { fetchModules } from "@/api/modules.api/modules.api";
 const API_URL = "http://localhost:4000";
 
 export default function AddScheduleLoader() {

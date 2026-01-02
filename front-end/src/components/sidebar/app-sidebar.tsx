@@ -17,9 +17,9 @@ import { NavUser } from "./nav-user";
 
 import { Link } from "react-router";
 import { NavMain } from "./nav-main";
-import type { User } from "@/_api/Auth/users";
-import { getUser } from "@/_api/Auth/users";
-import { getNavSchedules } from "@/_api/schedules.api";
+import type { User } from "@/api/Auth/users";
+import { getUser } from "@/api/Auth/users";
+import { getNavSchedules } from "@/api/schedules.api/schedules.api";
 
 interface navSchedule {
   id: string;

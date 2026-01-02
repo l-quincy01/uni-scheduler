@@ -25,7 +25,7 @@ import { Switch } from "@/components/ui/switch";
 import { useCalendar } from "@/components/Calendar/modules/components/calendar/contexts/calendar-context";
 
 import { useDragDrop } from "@/components/Calendar/modules/components/calendar/contexts/dnd-context";
-import { useTheme } from "@/_app/providers/theme/use-theme";
+import { useTheme } from "@/app/providers/theme/use-theme";
 
 export function Settings() {
   const {
