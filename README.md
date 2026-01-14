@@ -12,13 +12,13 @@
 # User Interface
 ### Onboarding Screens
 
-| Welcome |  
-|-------------------| 
-| <img src="./screenshots/1.png" width="85%" /> 
+| Welcome | Welcome Light |
+|--------|--------|
+| <img src="./screenshots/1.png" width="85%" /> | <img src="./screenshots/1a.png" width="85%" /> |
 
 | Login | Sign Up |
 |--------|--------|
-| <img src="./screenshots/1.png" width="85%" /> | <img src="./screenshots/1b.png" width="85%" /> |
+| <img src="./screenshots/1c.png" width="85%" /> | <img src="./screenshots/1b.png" width="85%" /> |
 
 
 
@@ -74,11 +74,11 @@
 │   │   ├── utils
 │   │   └── validations
 │   └── uploads
-└── scrapper
+└── scraper
     ├── app.py
     ├── db.py
     ├── schemas.py
-    └── scrapper
+    └── scraper
         ├── parse.py
         ├── persist.py
         └── jobs.py
@@ -102,7 +102,7 @@ flowchart LR
     API -->|users + refresh tokens| PSQL[(PostgreSQL)]
     API -->|profiles, schedules, exams| MONGO[(MongoDB)]
     API -->|study plans + exam gen| LLM[[OpenAI Chat Completions]]
-    SCRAPE[Flask scrapper] -->|parsed modules| MONGO
+    SCRAPE[Flask scraper] -->|parsed modules| MONGO
     FE -->|calendar + modules| API
 ```
 ### Authentication & Authorization
@@ -162,10 +162,10 @@ sequenceDiagram
     API-->>FE: examForeignKey + scheduleId
 ```
 
-### Scrapper Flow
+### Web Scraper Flow
 ```mermaid
 flowchart LR
-    SCRAPE["Flask scrapper"]
+    SCRAPE["Flask scraper"]
     HTML["Raw timetable HTML"]
     GROUPS["dept → exams grouped"]
     MONGO[("MongoDB rhodes_modules_timetable")]
