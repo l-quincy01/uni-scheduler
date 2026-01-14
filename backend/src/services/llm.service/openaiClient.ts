@@ -6,7 +6,6 @@ const openai = new OpenAI({});
 /**
  * Generate a study schedule with events & exams.
  */
-const esm = (p) => import(p);
 
 export async function generateSchedule(
   scheduleTitle: string,

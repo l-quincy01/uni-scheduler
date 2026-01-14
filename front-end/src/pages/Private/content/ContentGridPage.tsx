@@ -15,9 +15,11 @@ import ExamContentView from "./examView/ExamContentView";
 import { getExamByForeignkey } from "@/api/exam.api/exams.api";
 import type { ContentItem } from "@/components/content/Contentitem";
 import ContentGrid from "@/components/content/Contentitem";
+import { useTheme } from "next-themes";
 
 export default function ContentGridPage() {
   const navigate = useNavigate();
+  const { systemTheme } = useTheme();
 
   const [exams, setExams] = useState<
     Array<{
@@ -90,7 +92,14 @@ export default function ContentGridPage() {
 
       {contentItems.length === 0 ? (
         <div className="flex flex-col  items-center gap-2 ">
-          <img className="max-w-md" src="/Banner/no-exam.png" />
+          <img
+            className="max-w-md"
+            src={
+              systemTheme === "dark"
+                ? `/Banner/no-exam.png`
+                : `/Banner/no-exam-dark.png`
+            }
+          />
           <div className="text-muted-foreground text-center">
             No Exams Added Yet. <br />
             Click Exam + To Get Started
